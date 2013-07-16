@@ -1,0 +1,37 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Web pages
+GET     /                           controllers.Application.index
+GET     /mycloud                    controllers.Application.myCloud
+
+# REST controllers
+GET     /applications               controllers.Application.getAllApplication
+PUT     /applications               controllers.Application.createApplication
+GET     /applications/:id           controllers.Application.getApplicationDetail(id:String)
+GET     /storages/:id               controllers.Application.getStorageDetail(id:String)
+GET     /repositories/:id           controllers.Application.getRepositoryDetail(id:String)
+GET     /builds/:id                 controllers.Application.getBuildDetail(id:String)
+GET     /runtimes/:id               controllers.Application.getRuntimeServer(id:String)
+GET     /users                      controllers.Application.getAllUsers
+
+GET     /builds/run/:id             controllers.Application.runApplicationBuild(id:String)
+
+GET     /validate/appId             controllers.Application.validateAppId
+GET     /validate/username          controllers.Application.validateUsername
+PUT     /validate/userKey           controllers.Application.validateUserKey
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+
+GET     /login                      controllers.Application.login
+POST    /login                      controllers.Application.doLogin
+GET     /logout                     controllers.Application.doLogout
+
+GET     /logs/:appId                controllers.Application.streamLog(appId:String)
+
+
+
+GET     /test/:appId/:appType		controllers.Application.test(appId:String,appType:String)

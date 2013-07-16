@@ -1,0 +1,127 @@
+class AppDetailView extends Backbone.View
+
+  el: "#app-detail"
+
+  templateLoading: _.template( $('#template-app-loading').html() )
+  templateGeneral: _.template( $('#template-app-general').html() )
+  templateRepository: _.template( $('#template-app-repository').html() )
+  templateBuild: _.template( $('#template-app-build').html() )
+  templateStorage: _.template( $('#template-app-storage').html() )
+  templateRuntime: _.template( $('#template-app-runtime').html() )
+
+  events:
+    "click .tabGeneralMenu": "showTabGeneral"
+    "click .tabRepositoryMenu": "showTabRepository"
+    "click .tabStorageMenu": "showTabStorage"
+    "click .tabBuildMenu": "showTabBuild"
+    "click .tabRuntimeMenu": "showTabRuntime"
+
+  initialize: ()->
+    @tabGeneral=$ "#tabGeneral"
+    @tabStorage=$ "#tabStorage"
+    @tabRepository=$ "#tabRepository"
+    @tabBuild=$ "#tabBuild"
+    @tabRuntime=$ "#tabRuntime"
+    @currentTab="general"
+
+    @render()
+
+  displayDetail: (appId)=>
+    @show()
+    @applicationId=appId
+    @render()
+
+  render: ()=>
+    if(@applicationId?)
+      @showTabGeneral() if(@currentTab is "general")
+      @showTabStorage() if(@currentTab is "storage")
+      @showTabRepository() if(@currentTab is "repository")
+      @showTabBuild() if(@currentTab is "build")
+      @showTabRuntime() if(@currentTab is "runtime")
+    @
+
+  showTabGeneral: ()=>
+    @currentTab="general"
+    @tabGeneral.html(@templateLoading())
+    $.get("/applications/"+@applicationId, (data)=>
+      @tabGeneral.html(@templateGeneral(data))
+    )
+
+  showTabStorage: ()=>
+    @currentTab="storage"
+    @tabStorage.html(@templateLoading())
+    $.get("/storages/"+@applicationId, (data)=>
+      @tabStorage.html(@templateStorage(data))
+    ).error (error)=>
+      if error.status is 404 # Storage doesn't exisys
+        @tabStorage.html(@templateStorage(
+          server: null
+          storageType: "notfound"
+        ))
+
+  showTabRepository: ()=>
+    @currentTab="repository"
+    @tabRepository.html(@templateLoading())
+    $.get("/repositories/"+@applicationId, (data)=>
+      @tabRepository.html(@templateRepository(data))
+    ).error (error)=>
+      if error.status is 404 # Repository doesn't exisys
+        @tabRepository.html(@templateRepository(
+          path: null
+        ))
+
+  showTabBuild: ()=>
+    @currentTab="build"
+    @tabBuild.html(@templateLoading())
+    $.get("/builds/"+@applicationId, (data)=>
+      @tabBuild.html(@templateBuild(data))
+      $("#btnRunBuild").on "click", @runBuild
+    ).error (error)=>
+      if error.status is 404 # Build doesn't exisys
+        @tabBuild.html(@templateBuild(
+          jobUrl: null
+        ))
+
+  showLog: ()=>
+    console.log("SHOW LOG")
+    $.get("/logs/"+@applicationId, (data)=>
+      $("#logarea").text(data)
+    ).error (error)=>
+      $("#logarea").text(error.message)
+
+  showTabRuntime: ()=>
+    @currentTab="runtime"
+    @tabRuntime.html(@templateLoading())
+    $.get("/runtimes/"+@applicationId, (data)=>
+      @tabRuntime.html(@templateRuntime(data))
+      $("#showlogbtn").on "click", @showLog
+    ).error (error)=>
+      if error.status is 404 # Runtime doesn't exisys
+        @tabRuntime.html(@templateRuntime(
+          server: null
+          type: "unknown"
+        ))
+
+  hide: ()->
+    if @$el.css("display") isnt "none"
+      @$el.hide("slow")
+
+  show: ()->
+    if @$el.css("display") is "none"
+      @$el.show("slow")
+
+  runBuild: ()=>
+    console.log "trigger a build of "+@applicationId
+    $.ajax(
+      type: "GET",
+      url: "/builds/run/"+@applicationId,
+      contentType: "application/json",
+      data: ""
+    ).done ()=>
+      $("""<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">x</button>Build of application """+@applicationId+""" has been triggered...</div>""").insertBefore("div.applicationManager")
+
+
+
+window.app=window.app || {}
+window.app.views=window.app.views || {}
+window.app.views.AppDetailView=AppDetailView

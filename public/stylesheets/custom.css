@@ -1,0 +1,55 @@
+.applicationManager > div{
+    display: inline-block;
+    width: 20%;
+    vertical-align: top;
+}
+
+.applicationManager > div.detail{
+    display: inline-block;
+    width: 70%;
+    margin-left: 50px;
+}
+
+.tab-content{
+    padding: 20px;
+}
+
+.infoData, .infoIcon{
+    display: inline-block;
+}
+
+.infoData{
+    width: 70%;
+}
+
+.infoIcon{
+    padding-left: 40px;
+    vertical-align: top;
+}
+
+.loading{
+    color: #F18D01;
+}
+
+article > section > p{
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+div.appButtons{
+    margin-top: 20px;
+}
+
+div.loginScreen{
+    width: 500px;
+    margin: auto;
+    border: 1px solid #E44D26;
+}
+
+div.loginScreen input{
+    width: 350px;
+}
+
+div.loginScreen > * {
+    color: #E44D26;
+}

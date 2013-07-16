@@ -1,0 +1,326 @@
+@main(true){
+<div class="main wrapper clearfix">
+<h1 xmlns="http://www.w3.org/1999/html">My cloud</h1>
+    <p>Here you see and modify existing applications.<br/>You can also bootstrap creation of new application.</p>
+
+    <div class="applicationManager">
+        <div>
+            <ul class="nav nav-pills nav-stacked thumbnail" id="app-list">
+                <div class="loading">
+                    <img src="@routes.Assets.at("images/loading.gif")"/>
+                    Loading...
+                </div>
+            </ul>
+            <a class="btn btn-warning" href="#newApplication">Create new</a>
+        </div>
+        <div id="app-detail" class="detail" style="display: none">
+               <div class="tabbable"> <!-- Only required for left/right tabs -->
+                   <ul class="nav nav-tabs">
+                       <li class="active"><a class="tabGeneralMenu" href="#tabGeneral" data-toggle="tab">General informations</a></li>
+                       <li><a class="tabRepositoryMenu" href="#tabRepository" data-toggle="tab">Repository</a></li>
+                       <li><a class="tabBuildMenu" href="#tabBuild" data-toggle="tab">Build</a></li>
+                       <li><a class="tabStorageMenu" href="#tabStorage" data-toggle="tab">Storage</a></li>
+                       <li><a class="tabRuntimeMenu" href="#tabRuntime" data-toggle="tab">Runtime</a></li>
+                   </ul>
+                   <div class="tab-content thumbnail">
+                       <div class="tab-pane active" id="tabGeneral">
+                       </div>
+                       <div class="tab-pane" id="tabRepository">
+                       </div>
+                       <div class="tab-pane" id="tabBuild">
+                       </div>
+                       <div class="tab-pane" id="tabStorage">
+                       </div>
+                       <div class="tab-pane" id="tabRuntime">
+                       </div>
+                   </div>
+               </div>
+        </div>
+        <div id="app-creation" class="detail" style="display: none">
+            <div class="form-horizontal thumbnail">
+                <div class="control-group">
+                    <label class="control-label" for="inputAppName">Application name</label>
+                    <div class="controls">
+                        <input type="text" id="inputAppName" placeholder="appname">
+                        <span class="help-inline"></span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputAppType">Stack</label>
+                    <div class="controls">
+                        <select id="inputAppType">
+                            <option value="typesafe">Typesafe</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputAppStorage">Storage system</label>
+                    <div class="controls">
+                        <select id="inputAppStorage">
+                            <option value="none">None</option>
+                            <option value="mongo">MongoDB</option>
+                            <option value="mysql">MySQL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Users</label>
+                    <div class="controls">
+                        <ul id="createUsers" class="unstyled"><li>No users</li></ul>
+                        <a href="#addUserModal" role="button" class="btn" data-toggle="modal"><i class="icon-plus-sign"></i> Add user</a>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button id="createBtn" class="btn btn-warning">Create</button>
+                        <button id="cancelBtn" class="btn btn-danger">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="addUserModal" style="display: none" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Add an user</h3>
+        </div>
+        <div class="modal-body">
+            <div class="form-horizontal">
+                <div class="control-group">
+                    <label class="checkbox">
+                            <input checked="checked" type="radio" name="addUserType" value="existing" id="addUserTypeExisting"/>
+                            <strong>Existing user</strong>
+                    </label>
+                </div>
+                <div class="control-group existing">
+                    <label class="control-label" for="existingsUsers">Select user</label>
+                    <div class="controls">
+                        <select id="existingsUsers">
+                            <option value="">Loading...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="checkbox">
+                        <input type="radio" name="addUserType" value="new" id="addUserTypeNew"/>
+                        <strong>New user</strong>
+                    </label>
+                </div>
+                <div class="control-group new">
+                    <label class="control-label" for="inputAppName">User name</label>
+                    <div class="controls">
+                        <input type="text" disabled="disabled" style="width: 300px" id="inputUsername" placeholder="username">
+                        <span class="help-inline" id="helpUsername"></span>
+                    </div>
+                </div>
+                <div class="control-group new">
+                    <label class="control-label" for="inputUserKey">SSH public key</label>
+                    <div class="controls">
+                        <textarea id="inputUserKey" placeholder="Paste here the SSH public key" disabled="disabled" style="width: 300px" cols="100" rows="8"></textarea>
+                        <span class="help-inline" id="helpUserKey"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            <button class="btn btn-warning" id="addUserBtn">Add</button>
+        </div>
+    </div>
+
+</div>
+
+    <script type="text/template" id="template-app-item">
+        <a href="#application/<%=id%>"><%= id %></a>
+    </script>
+
+    <script type="text/template" id="template-app-loading">
+        <div class="loading">
+            <img src="@routes.Assets.at("images/loading.gif")"/>
+            Loading...
+        </div>
+    </script>
+
+    <script type="text/template" id="template-app-create-users">
+        <li><span style="display: inline-block; width: 150px"><%=username%></span><a href="#"><i class="icon-remove"></i></a></li>
+    </script>
+
+    <script type="text/template" id="template-app-general">
+        <div>
+            <div class="infoData">
+                <strong>Name:</strong> <%=id%><br/>
+                <strong>Type:</strong> <%=type%><br/>
+                <strong>Storage:</strong> <%=storageType%><br/><br/>
+                <% if(url === "none") { %>
+                <div class="alert">
+                    No public URL yet.
+                </div>
+                <% } else { %>
+                    <strong>URL :</strong> <a href="http://<%=url%>">http://<%=url%></a>
+                <% } %>
+            </div>
+            <div class="infoIcon">
+                <% if(type=="typesafe") {%>
+                <img src="@routes.Assets.at("images/icons/typesafe.png")" style="width: 150px"/>
+                <% }%>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template" id="template-app-repository">
+        <% if(path===null) { %>
+            <div class="alert">
+                <strong>Warning!</strong> Repository didn't exists. May be it's not yet created?
+            </div>
+        <% } else { %>
+            <strong>Git repository:</strong> <%= path %> <a href="#" onclick="$('#cloneCode').toggle()"><small>(Clone it!)</small></a><br/>
+            <pre id="cloneCode" style="display: none; margin-top: 20px">
+# Clone this repository to your local workstation
+git clone <%=path%>
+# Make some modification, and then
+git add -A
+git commit -m "New release"
+# Push to trigger build & deploy
+git push
+            </pre>
+            <p style="margin-top: 20px">
+                <strong>Repository users:</strong><br/>
+                <ul>
+                    <% _.each(users, function(user) { %>
+                    <li>
+                        <%= user.username %> <a href="#" onclick="$('#sshKey-<%=user.username%>').toggle()"><small>(show key)</small></a>
+                        <pre id="sshKey-<%=user.username%>" style="display: none">
+<%=user['ssh-pub-key']%>
+                        </pre>
+                    </li>
+                    <% }); %>
+                </ul>
+            </p>
+        <% } %>
+    </script>
+
+    <script type="text/template" id="template-app-build">
+        <% if(jobUrl==null) { %>
+            <div class="alert">
+                <strong>Warning!</strong> Jenkins job didn't exists. May be it's not yet created?
+            </div>
+        <% } else { %>
+            <div>
+                <div class="infoData">
+                    <strong>Job URL:</strong> <a href="<%=jobUrl%>"><%=jobUrl%></a><br/>
+                    <br/>
+                    <% if(lastBuildStatus === "UNKNOWN") { %>
+                    <div class="alert">
+                        Not built yet.
+                    </div>
+                    <% } else { %>
+                    <strong>Last build date:</strong> <%=getDateFormat(new Date(lastBuildDate))%><br/>
+                    <strong>Status: </strong>
+                    <% if (lastBuildStatus == "SUCCESS") { %>
+                        <span class="label label-success">Success!</span>
+                    <% } else if(lastBuildStatus == "FAILURE") { %>
+                        <span class="label label-important">Failure</span>
+                    <% } else { %>
+                        <span class="label label-info"><%=lastBuildStatus%></span>
+                    <% } %>
+                    <a href="<%=lastBuildUrl%>"><small>(see detail)</small></a>
+                    <br/>
+                    <% } %>
+                    <div class="appButtons">
+                        <button class="btn btn-warning" id="btnRunBuild">Trigger a build</button>
+                    </div>
+                </div>
+                <div class="infoIcon">
+                    <img src="@routes.Assets.at("images/icons/jenkins.png")" style="width: 150px"/>
+                </div>
+            </div>
+        <% } %>
+    </script>
+
+    <script type="text/template" id="template-app-storage">
+        <% if(storageType==="none") { %>
+            <div class="alert alert-success">
+                No storage defined for this application.
+            </div>
+        <% } else if(server===null) { %>
+            <div class="alert">
+                <strong>Warning!</strong> Storage didn't exists. May be it's not yet created?
+            </div>
+        <% } else { %>
+            <div>
+                <div class="infoData">
+                    <strong>Server:</strong> <%=server%><br/>
+                    <strong>Port:</strong> <%=port%><br/>
+                    <strong>Database:</strong> <%=dbName%><br/>
+                    <strong>User:</strong> <%=user%><br/>
+                    <strong>Password:</strong> <%=password%><br/>
+                </div>
+                <div class="infoIcon">
+                    <% if(storageType=="mongo") {%>
+                    <img src="@routes.Assets.at("images/icons/mongo.jpeg")" style="width: 150px"/>
+                    <% } else if(storageType=="mysql") {%>
+                    <img src="@routes.Assets.at("images/icons/mysql.jpeg")" style="width: 150px"/>
+                    <% }%>
+                </div>
+            </div>
+        <% } %>
+    </script>
+
+
+    <script type="text/template" id="template-app-runtime">
+        <% if(server===null) { %>
+        <div class="alert">
+            <strong>Warning!</strong> Runtime server didn't exists. May be it's not yet created?
+        </div>
+        <% } else { %>
+        <div>
+            <div class="infoData">
+                <strong>Server:</strong> <%=server%><br/>
+                <strong>Uptime:</strong> <%=uptime%><br/>
+                <strong>Last deploy:</strong> <%=lastDeploy%><br/>
+                <br/>
+                <a href="/logs/<%=appId%>" class="btn btn-warning" target="_blank">Open logs</a>
+                <a id="showlogbtn" class="btn btn-warning" target="_blank">Show logs</a>
+            </div>
+            <div class="infoIcon">
+                <% if(type=="typesafe") {%>
+                <img src="@routes.Assets.at("images/play.png")" style="width: 150px"/>
+                <% }%>
+            </div>
+        </div>
+        <div style="margin-top: 10px;">
+            <textarea id="logarea" rows="6" style="width: 97%"></textarea>
+        </div>        
+        <% } %>
+    </script>
+
+
+    <script type="text/javascript">
+        function getDateFormat(date){
+            if(date!=null){
+                var day=date.getDate();
+                if(day<10) day="0"+day;
+                var month=date.getMonth()+1;
+                if(month<10) month="0"+month;
+                var hours=date.getHours();
+                if(hours<10) hours="0"+hours;
+                var min=date.getMinutes();
+                if(min<10) min="0"+min;
+                var sec=date.getSeconds();
+                if(sec<10) sec="0"+sec;
+                return day+"/"+month+"/"+date.getFullYear()+" "+hours+":"+min+":"+sec;
+            }
+            return "";
+        }
+    </script>
+
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/views.AppItemView.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/views.AppDetailView.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/views.AppCreationView.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/models.App.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/coll.AppList.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/views.AppList.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/routes.MyCloud.js")"></script>
+
+}

@@ -1,0 +1,26 @@
+@(error:Option[String]=None)
+@main(){
+    @error.map{err=>
+    <div class="alert alert-error">
+        @err
+    </div>
+    }
+<div style="margin-top: 50px; margin-bottom: 50px; font-size: 200%;">
+    <div class="well well-large loginScreen" style="padding-bottom: 60px;">
+        <form method="POST" action="@routes.Application.doLogin">
+            <div class="form-vertical" >
+                <label class="control-label" for="inputLogin" style="font-size:150%; line-height: 50px;">Username</label>
+                <input type="text" id="inputLogin" name="username" style="font-size:150%; width: 480px; height: 50px;"/>
+
+                <label class="control-label" for="inputPassword" style="font-size:150%; line-height: 50px;">Password</label>
+                <input type="password" id="inputPassword" name="password" style="font-size:150%; width: 480px; height: 50px;"/>
+                <br/>
+                <div style="margin-top: 5px;">
+                    <a href="@routes.Application.login" style="margin-top: 25px; float: left">Sign up?</a>
+                    <button value="submit" class="btn btn-warning" style="font-size:150%; height: 65px; float: right">Log in</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+}
