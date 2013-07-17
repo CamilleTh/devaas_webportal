@@ -23,7 +23,7 @@ class ChefClient(val chefServerURL:String,val userId:String, val userKey: String
   private val logger=Logger("chef-client")
 
 
-  private val CHEF_VERSION = "10.14.2"
+  private val CHEF_VERSION = "11.0.2"
   private val SIGN_VERSION = "algorithm=sha1;version=1.0;"
 
   private val digester=MessageDigest.getInstance("SHA-1")

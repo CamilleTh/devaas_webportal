@@ -210,6 +210,7 @@ object Application extends Controller {
   def createApplication=Secured{Action{request=>
     Async {
       request.body.asJson.map{json=>
+
         val (appId,appType,storageType,users)=(
           (json \ "id").as[String].trim,
           (json \ "type").as[String].trim,
@@ -332,5 +333,4 @@ object Application extends Controller {
     bootstrapActor ! CreateNewVM(appId,appType)
     Ok("OK")
   }
-
 }
