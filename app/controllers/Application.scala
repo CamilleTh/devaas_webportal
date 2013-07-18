@@ -53,6 +53,19 @@ object Application extends Controller {
     }
   }}
 
+
+  def mytest=Secured{Action{
+    Async{
+      cloudClient.findAllClient().map{app=>app match{
+        case Some(data) => Ok(data)
+        case _ => Ok("")
+      }
+      }
+    }
+  }}
+
+
+
   def getApplicationDetail(appId:String)=Secured{Action{
     Async{
       cloudClient.getApplication(appId).flatMap{
@@ -224,7 +237,7 @@ object Application extends Controller {
         }
         cloudClient.createApp(appId,appType,storageType,users).map{
           case Some(json)=>
-            bootstrapActor ! CreateNewVM(appId,appType)
+            //bootstrapActor ! CreateNewVM(appId,appType)
             Ok(toJson(true))
           case _ =>BadRequest("Invalid data")
         }

@@ -39,6 +39,19 @@ class InTechCloudClient(val chefServerURL:String, val chefServerBasePath:String,
   def isRepositoryCreated(appName:String)=
     searchNode("ci-server_repositories:"+appName).map(_.isDefined)
 
+  def findAllClient()=
+    chefClient.doGet(chefServerBasePath+"/clients").map{resp=>
+      resp match {
+        case Some(data)=>
+          Some(JsArray(data.asInstanceOf[JsObject].keys.map{app=>
+            toJson(Map(
+              "id"->toJson(app)
+            ))
+          }.toList))
+        case _ => None
+      }
+    }
+
   def findAllApplications()=
     chefClient.doGet(chefServerBasePath+"/data/apps").map{resp=>
       resp match {

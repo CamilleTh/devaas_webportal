@@ -143,7 +143,6 @@ class AppCreationView extends Backbone.View
     )
     @renderUserList()
 
-
 window.app=window.app || {}
 window.app.views=window.app.views || {}
 window.app.views.AppCreationView=AppCreationView

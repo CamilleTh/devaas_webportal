@@ -34,3 +34,5 @@ GET     /logs/:appId                controllers.Application.streamLog(appId:Stri
 
 
 GET     /test/:appId/:appType		controllers.Application.test(appId:String,appType:String)
+
+GET     /test                       controllers.Application.mytest
