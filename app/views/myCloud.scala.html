@@ -57,7 +57,7 @@
                     <label class="control-label" for="inputAppType">Stack</label>
                     <div class="controls">
                         <select id="inputAppType">
-                            <option value="typesafe">Maven J2EE</option>
+                            <option value="J2EE">Maven J2EE</option>
                         </select>
                     </div>
                 </div>
@@ -211,6 +211,8 @@
             <div class="infoIcon">
                 <% if(type=="typesafe") {%>
                 <img src="@routes.Assets.at("images/icons/typesafe.png")" style="width: 150px"/>
+                <% } else if(type=="J2EE") {%>
+                <img src="@routes.Assets.at("images/icons/j2ee_logo.png")" style="width: 150px"/>
                 <% }%>
             </div>
         </div>
@@ -334,6 +336,8 @@ git push
             <div class="infoIcon">
                 <% if(type=="typesafe") {%>
                 <img src="@routes.Assets.at("images/play.png")" style="width: 150px"/>
+                <% } else if(type=="J2EE") {%>
+                <img src="@routes.Assets.at("images/icons/j2ee_logo.png")" style="width: 150px"/>
                 <% }%>
             </div>
         </div>
