@@ -10,3 +10,4 @@ class AppList extends Backbone.Collection
 window.app=window.app || {}
 window.app.collections=window.app.collections || {}
 window.app.collections.Applications=new AppList()
+

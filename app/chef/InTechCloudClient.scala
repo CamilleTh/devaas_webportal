@@ -132,6 +132,30 @@ class InTechCloudClient(val chefServerURL:String, val chefServerBasePath:String,
     ))
 
 
+  def createApp2(appId:String, groupid:String, appType:String, storageType: String, users:List[(String,String)], envs:List[(String,String)])=
+    chefClient.doPost(chefServerBasePath+"/data/apps",Some(
+      toJson(Map(
+        "id"->toJson(appId),
+        "groupid"->toJson(groupid),
+        "type"->toJson(appType),
+        "storageType"->toJson(storageType),
+        "users"->toJson(users.map{user=>
+          toJson(Map(
+            "username"->toJson(user._1),
+            "ssh-pub-key"->toJson(user._2),
+            "keyhash"->toJson(hashAndEncode(user._2.getBytes()))
+          ))
+        }),
+        "envs"->toJson(envs.map{env=>
+          toJson(Map(
+            "name"->toJson(env._1),
+            "version"->toJson(env._2)
+          ))
+        })
+      ))
+    ))
+
+
   def findAllUsers()=
     chefClient.doGet(chefServerBasePath+"/data/users").map{
       case Some(user)=>

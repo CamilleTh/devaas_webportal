@@ -46,10 +46,17 @@
                     </div>
                 </div>
                 <div class="control-group">
+                    <label class="control-label" for="inputGroupId">Group Id</label>
+                    <div class="controls">
+                        <input type="text" id="inputGroupId" placeholder="groupid">
+                        <span class="help-inline"></span>
+                    </div>
+                </div>
+                <div class="control-group">
                     <label class="control-label" for="inputAppType">Stack</label>
                     <div class="controls">
                         <select id="inputAppType">
-                            <option value="typesafe">Typesafe</option>
+                            <option value="typesafe">Maven J2EE</option>
                         </select>
                     </div>
                 </div>
@@ -61,6 +68,17 @@
                             <option value="mongo">MongoDB</option>
                             <option value="mysql">MySQL</option>
                         </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Environments</label>
+                    <div class="controls">
+                        <ul id="createEnvs" class="unstyled">
+                            <li><span style="display: inline-block; width: 150px">Dev</span><a href="#"><i class="icon-remove"></i></a></li>
+                            <li><span style="display: inline-block; width: 150px">Test</span><a href="#"><i class="icon-remove"></i></a></li>
+                            <li><span style="display: inline-block; width: 150px">Prod</span><a href="#"><i class="icon-remove"></i></a></li>
+                        </ul>
+                        <a href="#addEnvModal" role="button" class="btn" data-toggle="modal"><i class="icon-plus-sign"></i> Add environment</a>
                     </div>
                 </div>
                 <div class="control-group">
@@ -77,6 +95,35 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+
+    <div class="modal" id="addEnvModal" style="display: none" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabelEnv">Add an environment</h3>
+        </div>
+        <div class="modal-body">
+            <div class="form-horizontal">
+                <div class="control-group">
+                    <label class="checkbox">
+                        <input type="radio" name="addEnvType" value="new" id="addEnvTypeNew"/>
+                        <strong>New Env</strong>
+                    </label>
+                </div>
+                <div class="control-group new">
+                    <label class="control-label" for="inputAppName">Environment name</label>
+                    <div class="controls">
+                        <input type="text" disabled="disabled" style="width: 300px" id="inputEnvironment" placeholder="environment">
+                        <span class="help-inline" id="helpEnvironment"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            <button class="btn btn-warning" id="addEnvBtn">Add</button>
         </div>
     </div>
 
@@ -144,6 +191,10 @@
 
     <script type="text/template" id="template-app-create-users">
         <li><span style="display: inline-block; width: 150px"><%=username%></span><a href="#"><i class="icon-remove"></i></a></li>
+    </script>
+
+    <script type="text/template" id="template-app-create-envs">
+        <li><span style="display: inline-block; width: 150px"><%=env%></span><a href="#"><i class="icon-remove"></i></a></li>
     </script>
 
     <script type="text/template" id="template-app-general">

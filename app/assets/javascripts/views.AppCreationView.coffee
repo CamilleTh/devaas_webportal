@@ -3,6 +3,7 @@ class AppCreationView extends Backbone.View
   el: "#app-creation"
 
   templateUser: _.template( $('#template-app-create-users').html() )
+  templateEnv: _.template( $('#template-app-create-envs').html() )
 
   events:
     "click  #cancelBtn": "clear"
@@ -12,16 +13,26 @@ class AppCreationView extends Backbone.View
   initialize: ()->
     @existingUsers=[]
     @fieldAppName=$("#inputAppName")
+    @fieldGroupId=$("#inputGroupId")
     @fieldExistingUsers=$("#existingsUsers")
     @fieldUsername=$("#inputUsername")
+    @fieldEnvironment=$("#inputEnvironment")
     @fieldUserKey=$("#inputUserKey")
     @userList=$("#createUsers")
+    @envList=$("#createEnvs")
     @render()
     $("#addUserBtn").on "click",@addUser
     $("#addUserTypeExisting").on "change", ()->
       $(".control-group.new input,textarea").attr("disabled","disabled")
       $(".control-group.existing select").removeAttr("disabled","")
     $("#addUserTypeNew").on "change", ()->
+      $(".control-group.new input,textarea").removeAttr("disabled")
+      $(".control-group.existing select").attr("disabled","disabled")
+    $("#addEnvBtn").on "click",@addEnv
+    $("#addEnvTypeExisting").on "change", ()->
+      $(".control-group.new input,textarea").attr("disabled","disabled")
+      $(".control-group.existing select").removeAttr("disabled","")
+    $("#addEnvTypeNew").on "change", ()->
       $(".control-group.new input,textarea").removeAttr("disabled")
       $(".control-group.existing select").attr("disabled","disabled")
     @model=new app.models.App()
@@ -66,6 +77,10 @@ class AppCreationView extends Backbone.View
       @model.set("type",$("#inputAppType").val())
       @model.set("id",@fieldAppName.val())
       @model.set("storageType",$("#inputAppStorage").val())
+      console.log(@fieldGroupId.val())
+      @model.set("groupid",@fieldGroupId.val())
+
+      console.log(data:JSON.stringify(@model.toJSON()))
       $.ajax(
         type: "PUT",
         url: "/applications",
@@ -118,6 +133,15 @@ class AppCreationView extends Backbone.View
         @clearAddUser()
         $("#addUserModal").modal("hide")
 
+  addEnv: ()=>
+    if $("input[name='addEnvType']:checked").val() is "new"
+      $("#helpEnvironment").html("")
+      @model.get("envs").push
+        name : @fieldEnvironment.val()
+        version : 'null'
+      @renderEnvList()
+      $("#addEnvModal").modal("hide")
+
   clearAddUser: ()->
     @fieldUsername.val("")
     @fieldUserKey.val("")
@@ -128,6 +152,11 @@ class AppCreationView extends Backbone.View
     @userList.html("")
     @addUserToList(user) for user in @model.get("users")
 
+  renderEnvList: ()->
+    @envList.html("")
+
+    @addEnvToList(env) for env in @model.get("envs")
+
   addUserToList: (user)->
     listItem=$(@templateUser(
       username: user.username
@@ -137,11 +166,28 @@ class AppCreationView extends Backbone.View
     )
     @userList.append(listItem)
 
+  addEnvToList: (env)->
+    listItem=$(@templateEnv(
+      env: env.name
+    ))
+    listItem.children("a").on("click",()=>
+      @removeEnv(env.name)
+    )
+    @envList.append(listItem)
+
+
   removeUser: (username)=>
     @model.set("users",@model.get("users").filter (user)->
       user.username isnt username
     )
     @renderUserList()
+
+  removeEnv: (env)=>
+    console.log(env)
+    @model.set("envs",@model.get("envs").filter (envi)->
+      envi.name isnt env
+    )
+    @renderEnvList()
 
 window.app=window.app || {}
 window.app.views=window.app.views || {}

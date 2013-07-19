@@ -84,7 +84,7 @@ class ChefClient(val chefServerURL:String,val userId:String, val userKey: String
     .sign(signRequest(path))
 
   private def parseChefResponse(response:Response)=response match{
-    case resp:Response if resp.status==200 => Some(Json.parse(resp.body))
+    case resp:Response if resp.status>=200 && resp.status < 300 => Some(Json.parse(resp.body))
     case resp =>
       logger.error("Chef API request failed : status %s, response content %s".format(resp.status,resp.body))
       None

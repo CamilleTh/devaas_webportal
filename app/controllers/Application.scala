@@ -224,22 +224,30 @@ object Application extends Controller {
     Async {
       request.body.asJson.map{json=>
 
-        val (appId,appType,storageType,users)=(
+        //val (appId,appType,storageType,users)=(
+        val (appId,appType,groupid,storageType,users,envs)=(
           (json \ "id").as[String].trim,
           (json \ "type").as[String].trim,
+          (json \ "groupid").as[String].trim,
           (json \ "storageType").as[String].trim,
           (json \ "users").as[List[JsValue]].map{user=>
             ((user \ "username").as[String],(user \ "userkey").as[String])
+          },
+          (json \ "envs").as[List[JsValue]].map{env=>
+            ((env \ "name").as[String],(env \ "version").as[String])
           }
          )
         users.foreach{user=>
-          cloudClient.createUser(user._1,user._2)
+            cloudClient.createUser(user._1,user._2)
         }
-        cloudClient.createApp(appId,appType,storageType,users).map{
-          case Some(json)=>
+
+
+          //cloudClient.createApp(appId,appType,storageType,users).map{
+          cloudClient.createApp2(appId, groupid, appType, storageType, users, envs).map{
+            case Some(json)=>
             //bootstrapActor ! CreateNewVM(appId,appType)
             Ok(toJson(true))
-          case _ =>BadRequest("Invalid data")
+            case _ =>BadRequest("Invalid data")
         }
       }.getOrElse(Promise.pure(BadRequest("Invalid JSON")))
     }
