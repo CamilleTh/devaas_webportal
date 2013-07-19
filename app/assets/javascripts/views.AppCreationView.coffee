@@ -32,12 +32,6 @@ class AppCreationView extends Backbone.View
       $(".control-group.new input,textarea").removeAttr("disabled")
       $(".control-group.existing select").attr("disabled","disabled")
     $("#addEnvBtn").on "click",@addEnv
-    $("#addEnvTypeExisting").on "change", ()->
-      $(".control-group.new input,textarea").attr("disabled","disabled")
-      $(".control-group.existing select").removeAttr("disabled","")
-    $("#addEnvTypeNew").on "change", ()->
-      $(".control-group.new input,textarea").removeAttr("disabled")
-      $(".control-group.existing select").attr("disabled","disabled")
     @model=new app.models.App()
     @renderEnvList()
     $.get "/users", (result)=>
@@ -138,11 +132,18 @@ class AppCreationView extends Backbone.View
         $("#addUserModal").modal("hide")
 
   addEnv: ()=>
-    if $("input[name='addEnvType']:checked").val() is "new"
-      $("#helpEnvironment").html("")
+    $("#helpEnvironment").html("")
+    exists: false
+    for env in @model.get("envs")
+      if @fieldEnvironment.val() == env.name
+        exists=true
+        $("#helpEnvironment").html("Env name already in use")
+        @fieldEnvironment.parents("div.control-group").addClass("error")
+    if !exists
       @model.get("envs").push
         name : @fieldEnvironment.val()
         version : 'null'
+      @fieldEnvironment.parents("div.control-group").removeClass("error")
       @renderEnvList()
       $("#addEnvModal").modal("hide")
 
