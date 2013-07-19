@@ -138,13 +138,11 @@ class AppCreationView extends Backbone.View
         $("#addUserModal").modal("hide")
 
   addEnv: ()=>
-    if $("input[name='addEnvType']:checked").val() is "new"
-      $("#helpEnvironment").html("")
-      @model.get("envs").push
-        name : @fieldEnvironment.val()
-        version : 'null'
-      @renderEnvList()
-      $("#addEnvModal").modal("hide")
+    @model.get("envs").push
+      name : @fieldEnvironment.val()
+      version : 'null'
+    @renderEnvList()
+    $("#addEnvModal").modal("hide")
 
   clearAddUser: ()->
     @fieldUsername.val("")
