@@ -4,7 +4,7 @@ class App extends Backbone.Model
     storageType: ''
     groupid: ''
     type: ''
-    envs: []
+    envs: [{"name":"Dev","version":"null"}]
     users: []
 
 window.app=window.app || {}

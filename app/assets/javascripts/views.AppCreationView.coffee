@@ -20,6 +20,7 @@ class AppCreationView extends Backbone.View
     @fieldUserKey=$("#inputUserKey")
     @userList=$("#createUsers")
     @envList=$("#createEnvs")
+
     @render()
     $("#addUserBtn").on "click",@addUser
     $("#addUserTypeExisting").on "change", ()->
@@ -154,7 +155,9 @@ class AppCreationView extends Backbone.View
 
   renderEnvList: ()->
     @envList.html("")
-
+    @model.get("envs").push
+      name : "Dev"
+      version : "null"
     @addEnvToList(env) for env in @model.get("envs")
 
   addUserToList: (user)->
@@ -167,14 +170,14 @@ class AppCreationView extends Backbone.View
     @userList.append(listItem)
 
   addEnvToList: (env)->
-    listItem=$(@templateEnv(
-      env: env.name
-    ))
-    listItem.children("a").on("click",()=>
-      @removeEnv(env.name)
-    )
+    if(env.name != "Dev")
+      listItem=$(@templateEnv(
+        env: env.name
+      ))
+      listItem.children("a").on("click",()=>
+        @removeEnv(env.name)
+      )
     @envList.append(listItem)
-
 
   removeUser: (username)=>
     @model.set("users",@model.get("users").filter (user)->
