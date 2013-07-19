@@ -158,9 +158,6 @@ class AppCreationView extends Backbone.View
 
   renderEnvList: ()->
     @envList.html("")
-    @model.get("envs").push
-      name : "Dev"
-      version : "null"
     @addEnvToList(env) for env in @model.get("envs")
 
   addUserToList: (user)->
