@@ -4,6 +4,8 @@ class AppCreationView extends Backbone.View
 
   templateUser: _.template( $('#template-app-create-users').html() )
   templateEnv: _.template( $('#template-app-create-envs').html() )
+  templateEnvDev: _.template( $('#template-app-create-envs-dev').html() )
+
 
   events:
     "click  #cancelBtn": "clear"
@@ -37,6 +39,7 @@ class AppCreationView extends Backbone.View
       $(".control-group.new input,textarea").removeAttr("disabled")
       $(".control-group.existing select").attr("disabled","disabled")
     @model=new app.models.App()
+    @renderEnvList()
     $.get "/users", (result)=>
       @fieldExistingUsers.html("")
       @fieldExistingUsers.append("<option value=\""+user.username+"\">"+user.username+"</option>") for user in result
@@ -170,13 +173,17 @@ class AppCreationView extends Backbone.View
     @userList.append(listItem)
 
   addEnvToList: (env)->
-    if(env.name != "Dev")
+    if env.name != "Dev"
       listItem=$(@templateEnv(
         env: env.name
       ))
       listItem.children("a").on("click",()=>
         @removeEnv(env.name)
       )
+    else
+      listItem=$(@templateEnvDev(
+        env: env.name
+      ))
     @envList.append(listItem)
 
   removeUser: (username)=>
