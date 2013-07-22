@@ -53,7 +53,7 @@ class AppDetailView extends Backbone.View
     $.get("/storages/"+@applicationId, (data)=>
       @tabStorage.html(@templateStorage(data))
     ).error (error)=>
-      if error.status is 404 # Storage doesn't exisys
+      if error.status is 404 # Storage doesn't exists
         @tabStorage.html(@templateStorage(
           server: null
           storageType: "notfound"
@@ -65,19 +65,22 @@ class AppDetailView extends Backbone.View
     $.get("/repositories/"+@applicationId, (data)=>
       @tabRepository.html(@templateRepository(data))
     ).error (error)=>
-      if error.status is 404 # Repository doesn't exisys
+      if error.status is 404 # Repository doesn't exists
         @tabRepository.html(@templateRepository(
           path: null
         ))
 
   showTabBuild: ()=>
     @currentTab="build"
+
+
+
     @tabBuild.html(@templateLoading())
-    $.get("/builds/"+@applicationId, (data)=>
-      @tabBuild.html(@templateBuild(data))
+    $.get("/builds/"+@applicationId+"/Prod", (data)=>
+      @tabBuild.append(@templateBuild(data))
       $("#btnRunBuild").on "click", @runBuild
     ).error (error)=>
-      if error.status is 404 # Build doesn't exisys
+      if error.status is 404 # Build doesn't exists
         @tabBuild.html(@templateBuild(
           jobUrl: null
         ))
@@ -96,7 +99,7 @@ class AppDetailView extends Backbone.View
       @tabRuntime.html(@templateRuntime(data))
       $("#showlogbtn").on "click", @showLog
     ).error (error)=>
-      if error.status is 404 # Runtime doesn't exisys
+      if error.status is 404 # Runtime doesn't exists
         @tabRuntime.html(@templateRuntime(
           server: null
           type: "unknown"
