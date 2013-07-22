@@ -83,6 +83,7 @@ class AppDetailView extends Backbone.View
           for name, value of fieldvalue
             for envname, val of value
               if(envname == "name")
+                console.log("####"+data)
                 $.get("/builds/"+@applicationId+"/"+val, (data)=>
                   @tabBuild.append(@templateBuild(data))
                   $("#btnRunBuild").on "click", @runBuild
