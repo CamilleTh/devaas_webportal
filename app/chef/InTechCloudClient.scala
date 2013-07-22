@@ -70,9 +70,7 @@ class InTechCloudClient(val chefServerURL:String, val chefServerBasePath:String,
       resp match {
         case Some(data)=>
           Some(JsArray(data.asInstanceOf[JsObject].keys.map{env=>
-            toJson(Map(
-              "name"->toJson(env)
-            ))
+            toJson(env)
           }.toList))
         case _ => None
       }
