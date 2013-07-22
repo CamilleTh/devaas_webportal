@@ -53,16 +53,6 @@ object Application extends Controller {
     }
   }}
 
-  def getEnvsByApplication(appId:String)=Secured{Action{
-    Async{
-      cloudClient.findAllEnvsByApplication(appId).map{env=>env match{
-        case Some(data) => Ok(data)
-        case _ => Ok("")
-      }
-      }
-    }
-  }}
-
   def mytest=Secured{Action{
     Async{
       cloudClient.findAllClient().map{app=>app match{
@@ -168,7 +158,8 @@ object Application extends Controller {
           System.out.println(data)
           Some(toJson(Map(
             "jobUrl"->data \ "normal" \ "ci-server" \ "jobs" \ appId \ env,
-            "jobInternalUrl"-> toJson("http://"+(data \ "automatic" \ "ipaddress").as[String]+":8080/job/"+appId)
+            "jobInternalUrl"-> toJson("http://"+(data \ "automatic" \ "ipaddress").as[String]+":8080/job/"+appId),
+            "envName"-> toJson(env)
           )))
         case _ => None
       }.flatMap{
