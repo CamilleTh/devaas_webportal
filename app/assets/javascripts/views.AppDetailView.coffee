@@ -73,17 +73,12 @@ class AppDetailView extends Backbone.View
   showTabBuild: ()=>
     @currentTab="build"
     @tabBuild.html(@templateLoading())
-
     $.get("/applications/"+@applicationId, (data)=>
-      console.log(data)
       for fieldname, fieldvalue of data
-        console.log(fieldname)
-        console.log(fieldvalue)
         if (fieldname == "envs")
           for name, value of fieldvalue
             for envname, val of value
               if(envname == "name")
-                console.log("####"+data)
                 $.get("/builds/"+@applicationId+"/"+val, (data)=>
                   @tabBuild.append(@templateBuild(data))
                   $("#btnRunBuild").on "click", @runBuild

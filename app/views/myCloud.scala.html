@@ -258,7 +258,7 @@ git push
         <% } else { %>
             <div>
                 <div class="infoData">
-                    <strong>Job URL:</strong> <a href="<%=jobUrl%>"><%=jobUrl%></a><br/>
+                    <strong><%=envName%> Job URL:</strong> <a href="<%=jobUrl%>"><%=jobUrl%></a><br/>
                     <br/>
                     <% if(lastBuildStatus === "UNKNOWN") { %>
                     <div class="alert">
