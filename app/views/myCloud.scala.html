@@ -16,11 +16,11 @@
         <div id="app-detail" class="detail" style="display: none">
                <div class="tabbable"> <!-- Only required for left/right tabs -->
                    <ul class="nav nav-tabs">
-                       <li class="active"><a class="tabGeneralMenu" href="#tabGeneral" data-toggle="tab">General informations</a></li>
-                       <li><a class="tabRepositoryMenu" href="#tabRepository" data-toggle="tab">Repository</a></li>
-                       <li><a class="tabBuildMenu" href="#tabBuild" data-toggle="tab">Build</a></li>
-                       <li><a class="tabStorageMenu" href="#tabStorage" data-toggle="tab">Storage</a></li>
-                       <li><a class="tabRuntimeMenu" href="#tabRuntime" data-toggle="tab">Runtime</a></li>
+                       <li class="active"><a class="tabGeneralMenu" style="outline:0" href="#tabGeneral" data-toggle="tab">General informations</a></li>
+                       <li><a class="tabRepositoryMenu" style="outline:0" href="#tabRepository" data-toggle="tab">Repository</a></li>
+                       <li><a class="tabBuildMenu" style="outline:0" href="#tabBuild" data-toggle="tab">Build</a></li>
+                       <li><a class="tabStorageMenu" style="outline:0" href="#tabStorage" data-toggle="tab">Storage</a></li>
+                       <li><a class="tabRuntimeMenu" style="outline:0" href="#tabRuntime" data-toggle="tab">Runtime</a></li>
                    </ul>
                    <div class="tab-content thumbnail">
                        <div class="tab-pane active" id="tabGeneral">
@@ -268,7 +268,7 @@ git push
         </div>
         <% } else { %>
         <div class="infoData">
-            <a href="#" class="display" style="outline:0" id="<%=envName%>_plus" onclick="
+            <a href="#" style="outline:0" id="<%=envName%>_plus" onclick="
                     document.getElementById(<%=envName%>_plus).removeClass('display');
                     document.getElementById(<%=envName%>_plus).addClass('hidden');
                     document.getElementById(<%=envName%>_minus).removeClass('hidden');
@@ -277,7 +277,7 @@ git push
                     document.getElementById(<%=envName%>_info).addClass('display');">
                 <i class="icon-plus"></i>
             </a>
-            <a href="#" class="hidden" style="outline:0" id="<%=envName%>_minus" onclick="
+            <a href="#" style="outline:0;display:none" id="<%=envName%>_minus" onclick="
                     document.getElementById(<%=envName%>_minus).removeClass('display');
                     document.getElementById(<%=envName%>_minus).addClass('hidden');
                     document.getElementById(<%=envName%>_plus).removeClass('hidden');
@@ -287,8 +287,9 @@ git push
                 <i class="icon-minus"></i>
             </a>
             <strong><%=envName%> Job:</strong> <a href="<%=jobUrl%>"><%=jobUrl%></a>
+            <strong><%=envName%> Job:</strong> <a href="<%=jobUrl%>"><%=jobUrl%></a>
         </div>
-        <div class="appButtons infoData hidden" id="<%=envName%>_info">
+        <div class="appButtons infoData" style="display:none" id="<%=envName%>_info">
             <div>
                 <button class="btn btn-warning" style="display:inline" id="<%=envName%>_btnRunBuild">Trigger a build</button>
             </div>
