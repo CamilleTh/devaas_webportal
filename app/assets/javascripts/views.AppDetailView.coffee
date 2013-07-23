@@ -139,12 +139,14 @@ class AppDetailView extends Backbone.View
     if $("#"+source.target.id+"_icon").hasClass("icon-plus")
       $("#"+source.target.id+"_icon").removeClass("icon-plus")
       $("#"+source.target.id+"_icon").addClass("icon-minus")
-      $("#"+source.target.id+"_icon").addClass("active")
+      $("#"+source.target.id).addClass("active")
+      $("#"+source.target.id).removeClass("btn-warning")
       $("#"+source.target.id+"_info").show("slow")
     else
       $("#"+source.target.id+"_icon").removeClass("icon-minus")
       $("#"+source.target.id+"_icon").addClass("icon-plus")
-      $("#"+source.target.id+"_icon").removeClass("active")
+      $("#"+source.target.id).removeClass("active")
+      $("#"+source.target.id).addClass("btn-warning")
       $("#"+source.target.id+"_info").hide("slow")
 
   runBuild: (source)=>
