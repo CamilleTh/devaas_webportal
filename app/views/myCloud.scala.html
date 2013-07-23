@@ -16,11 +16,11 @@
         <div id="app-detail" class="detail" style="display: none">
                <div class="tabbable"> <!-- Only required for left/right tabs -->
                    <ul class="nav nav-tabs">
-                       <li class="active"><a class="tabGeneralMenu" href="#tabGeneral" data-toggle="tab">General informations</a></li>
-                       <li><a class="tabRepositoryMenu" href="#tabRepository" data-toggle="tab">Repository</a></li>
-                       <li><a class="tabBuildMenu" href="#tabBuild" data-toggle="tab">Build</a></li>
-                       <li><a class="tabStorageMenu" href="#tabStorage" data-toggle="tab">Storage</a></li>
-                       <li><a class="tabRuntimeMenu" href="#tabRuntime" data-toggle="tab">Runtime</a></li>
+                       <li class="active"><a class="tabGeneralMenu" style="outline:0" href="#tabGeneral" data-toggle="tab">General informations</a></li>
+                       <li><a class="tabRepositoryMenu" style="outline:0" href="#tabRepository" data-toggle="tab">Repository</a></li>
+                       <li><a class="tabBuildMenu" style="outline:0" href="#tabBuild" data-toggle="tab">Build</a></li>
+                       <li><a class="tabStorageMenu" style="outline:0" href="#tabStorage" data-toggle="tab">Storage</a></li>
+                       <li><a class="tabRuntimeMenu" style="outline:0" href="#tabRuntime" data-toggle="tab">Runtime</a></li>
                    </ul>
                    <div class="tab-content thumbnail">
                        <div class="tab-pane active" id="tabGeneral">
@@ -250,41 +250,67 @@ git push
         <% } %>
     </script>
 
+    <script type="text/template" id="template-tmp-app-build">
+        <div>
+            <div class="infoData">
+
+            </div>
+            <div class="infoIcon">
+                <img src="@routes.Assets.at("images/icons/jenkins.png")" style="width: 150px"/>
+            </div>
+        </div>
+    </script>
+
     <script type="text/template" id="template-app-build">
         <% if(jobUrl==null) { %>
-            <div class="alert">
-                <strong>Warning!</strong> Jenkins job didn't exists. May be it's not yet created?
-            </div>
+        <div class="alert">
+            <strong><%=envName%> Job : Warning!</strong> Jenkins job didn't exists. May be it's not yet created?
+        </div>
         <% } else { %>
+        <div class="infoData">
+            <a href="#" style="outline:0" id="<%=envName%>_plus" onclick="
+                    document.getElementById(<%=envName%>_plus).removeClass('display');
+                    document.getElementById(<%=envName%>_plus).addClass('hidden');
+                    document.getElementById(<%=envName%>_minus).removeClass('hidden');
+                    document.getElementById(<%=envName%>_minus).addClass('display');
+                    document.getElementById(<%=envName%>_info).removeClass('hidden');
+                    document.getElementById(<%=envName%>_info).addClass('display');">
+                <i class="icon-plus"></i>
+            </a>
+            <a href="#" style="outline:0;display:none" id="<%=envName%>_minus" onclick="
+                    document.getElementById(<%=envName%>_minus).removeClass('display');
+                    document.getElementById(<%=envName%>_minus).addClass('hidden');
+                    document.getElementById(<%=envName%>_plus).removeClass('hidden');
+                    document.getElementById(<%=envName%>_plus).addClass('display');
+                    document.getElementById(<%=envName%>_info).removeClass('display');
+                    document.getElementById(<%=envName%>_info).addClass('hidden');">
+                <i class="icon-minus"></i>
+            </a>
+            <strong><%=envName%> Job:</strong> <a href="<%=jobUrl%>"><%=jobUrl%></a>
+        </div>
+        <div class="appButtons infoData" style="display:none" id="<%=envName%>_info">
             <div>
-                <div class="infoData">
-                    <strong><%=envName%> Job URL:</strong> <a href="<%=jobUrl%>"><%=jobUrl%></a><br/>
-                    <br/>
-                    <% if(lastBuildStatus === "UNKNOWN") { %>
-                    <div class="alert">
-                        Not built yet.
-                    </div>
-                    <% } else { %>
-                    <strong>Last build date:</strong> <%=getDateFormat(new Date(lastBuildDate))%><br/>
-                    <strong>Status: </strong>
-                    <% if (lastBuildStatus == "SUCCESS") { %>
-                        <span class="label label-success">Success!</span>
-                    <% } else if(lastBuildStatus == "FAILURE") { %>
-                        <span class="label label-important">Failure</span>
-                    <% } else { %>
-                        <span class="label label-info"><%=lastBuildStatus%></span>
-                    <% } %>
-                    <a href="<%=lastBuildUrl%>"><small>(see detail)</small></a>
-                    <br/>
-                    <% } %>
-                    <div class="appButtons">
-                        <button class="btn btn-warning btnRunBuild" value="<%=envName%>">Trigger a build</button>
-                    </div>
-                </div>
-                <div class="infoIcon">
-                    <img src="@routes.Assets.at("images/icons/jenkins.png")" style="width: 150px"/>
-                </div>
+                <button class="btn btn-warning" style="display:inline" id="<%=envName%>_btnRunBuild">Trigger a build</button>
             </div>
+            <span>
+                <% if(lastBuildStatus === "UNKNOWN") { %>
+                <div class="alert">Not built yet.</div>
+                <% } else { %>
+                <strong>Last build date:</strong> <%=getDateFormat(new Date(lastBuildDate))%><br/>
+                <strong>Status: </strong>
+                <% if (lastBuildStatus == "SUCCESS") { %>
+                <span class="label label-success">Success!</span>
+                <% } else if(lastBuildStatus == "FAILURE") { %>
+                <span class="label label-important">Failure</span>
+                <% } else { %>
+                <span class="label label-info"><%=lastBuildStatus%></span>
+                <% } %>
+                <a href="<%=lastBuildUrl%>"><small>(see detail)</small></a>
+                <br/>
+                <% } %>
+            </span>
+        </div>
+        <hr width=100%/>
         <% } %>
     </script>
 
