@@ -11,7 +11,7 @@
                     Loading...
                 </div>
             </ul>
-            <a class="btn btn-warning" href="#newApplication">Create new</a>
+            <a href="#newApplication"><button class="btn btn-warning btn-large" style="outline:0;width:100%;size:120%"><i class="icon-white icon-plus"></i> New application</button></a>
         </div>
         <div id="app-detail" class="detail" style="display: none">
                <div class="tabbable"> <!-- Only required for left/right tabs -->
@@ -84,13 +84,13 @@
                     <label class="control-label">Users</label>
                     <div class="controls">
                         <ul id="createUsers" class="unstyled"><li>No users</li></ul>
-                        <a href="#addUserModal" role="button" class="btn" data-toggle="modal"><i class="icon-plus-sign"></i> Add user</a>
+                        <a href="#addUserModal" role="button" class="btn" data-toggle="modal" style="outline:0"><i class="icon-plus-sign"></i> Add user</a>
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <button id="createBtn" class="btn btn-warning">Create</button>
-                        <button id="cancelBtn" class="btn btn-danger">Cancel</button>
+                        <button id="createBtn" class="btn btn-warning" style="outline:0">Create</button>
+                        <button id="cancelBtn" class="btn btn-danger" style="outline:0">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -221,7 +221,7 @@
     <script type="text/template" id="template-app-repository">
         <% if(path===null) { %>
             <div class="alert">
-                <strong>Warning!</strong> Repository didn't exists. May be it's not yet created?
+                <strong>Warning!</strong> Repository doesn't exists. Maybe it's not yet created?
             </div>
         <% } else { %>
             <strong>Git repository:</strong> <%= path %> <a href="#" onclick="$('#cloneCode').toggle()"><small>(Clone it!)</small></a><br/>
@@ -251,6 +251,11 @@ git push
     </script>
 
     <script type="text/template" id="template-app-build">
+        <% if(status==null) { %>
+        <div class="alert">
+            <strong>Warning!</strong> Jenkins not found.
+        </div>
+        <% } else { %>
         <div>
             <div id="subBuilds" class="infoData" style="width: 78%">
             </div>
@@ -258,41 +263,45 @@ git push
                 <img src="@routes.Assets.at("images/icons/jenkins.png")" style="width: 100%"/>
             </div>
         </div>
+        <% } %>
     </script>
 
     <script type="text/template" id="template-app-sub-build">
         <% if(jobUrl==null) { %>
         <div class="alert">
-            <strong><%=envName%> Job : Warning!</strong> Jenkins job didn't exists. May be it's not yet created?
+            <strong>Warning!</strong> Job not found. Maybe it's not yet created?
         </div>
+        <hr style="width:100%"/>
         <% } else { %>
         <div class="infoData" style="width:100%">
             <button class="btn btn-warning btn-small" style="outline:0" id="<%=envName%>_detail"><i class="icon-white icon-plus" id="<%=envName%>_detail_icon"></i></button>
             <strong><%=envName%> Job:</strong> <a href="<%=jobUrl%>" style="display:inline"><%=jobUrl%></a>
         </div>
         <div class="appButtons infoData" style="display:none" id="<%=envName%>_detail_info">
-            <div>
-                <button class="btn btn-warning" style="display:inline" value="<%=envName%>" id="<%=envName%>_btnRunBuild">Trigger a build</button>
-            </div>
             <div style="overflow:hidden">
                 <% if(lastBuildStatus === "UNKNOWN") { %>
-                    <div style="float:left" class="alert">Not built yet.</div>
+                <div style="float:left" class="alert">Not built yet.</div>
                 <% } else { %>
-                    <strong>Last build date:</strong> <%=getDateFormat(new Date(lastBuildDate))%><br/>
+                <div><strong>Last build date:</strong> <%=getDateFormat(new Date(lastBuildDate))%></div>
+                <div>
                     <strong>Status: </strong>
-                <% if (lastBuildStatus == "SUCCESS") { %>
-                <div style="float:left" class="label label-success">Success!</div>
-                <% } else if(lastBuildStatus == "FAILURE") { %>
-                <div style="float:left" class="label label-important">Failure</div>
-                <% } else { %>
-                <div style="float:left" class="label label-info"><%=lastBuildStatus%></div>
-                <% } %>
-                <a href="<%=lastBuildUrl%>"><small>(see detail)</small></a>
+                    <% if (lastBuildStatus == "SUCCESS") { %>
+                    <span class="label label-success">Success!</span>
+                    <% } else if(lastBuildStatus == "FAILURE") { %>
+                    <span class="label label-important">Failure</span>
+                    <% } else { %>
+                    <span class="label label-info"><%=lastBuildStatus%></span>
+                    <% } %>
+                    <a href="<%=lastBuildUrl%>"><small>(see detail)</small></a>
+                </div>
                 <br/>
                 <% } %>
             </div>
+            <div>
+                <button class="btn btn-warning" style="display:inline" value="<%=envName%>" id="<%=envName%>_btnRunBuild">Trigger a build</button>
+            </div>
         </div>
-        <hr width=100%/>
+        <hr style="width:100%"/>
         <% } %>
     </script>
 
@@ -303,7 +312,7 @@ git push
             </div>
         <% } else if(server===null) { %>
             <div class="alert">
-                <strong>Warning!</strong> Storage didn't exists. May be it's not yet created?
+                <strong>Warning!</strong> Storage doesn't exists. Maybe it's not yet created?
             </div>
         <% } else { %>
             <div>
@@ -328,7 +337,7 @@ git push
     <script type="text/template" id="template-app-runtime">
         <% if(server===null) { %>
         <div class="alert">
-            <strong>Warning!</strong> Runtime server didn't exists. May be it's not yet created?
+            <strong>Warning!</strong> Runtime server doesn't exists. Maybe it's not yet created?
         </div>
         <% } else { %>
         <div>

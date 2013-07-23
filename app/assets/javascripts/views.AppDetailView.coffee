@@ -74,7 +74,7 @@ class AppDetailView extends Backbone.View
 
   showTabBuild: ()=>
     @currentTab="build"
-    @tabBuild.html(@templateBuild())
+    @tabBuild.html(@templateBuild(status:"ok"))
     @subBuildsDiv=$ "#subBuilds"
     @subBuildsDiv.html(@templateLoading())
     $.get("/applications/"+@applicationId, (data)=>
@@ -98,10 +98,14 @@ class AppDetailView extends Backbone.View
                     @subBuildsDiv.html(@templateSubBuild(
                       jobUrl: null
                     ))
+                  if error.status is 500 # Build doesn't exists
+                    @subBuildsDiv.html(@templateSubBuild(
+                      jobUrl: null
+                    ))
     ).error (error)=>
       if error.status is 404 # Build doesn't exists
         @tabBuild.html(@templateBuild(
-          jobUrl: null
+          status: null
         ))
 
   showLog: ()=>
@@ -135,10 +139,12 @@ class AppDetailView extends Backbone.View
     if $("#"+source.target.id+"_icon").hasClass("icon-plus")
       $("#"+source.target.id+"_icon").removeClass("icon-plus")
       $("#"+source.target.id+"_icon").addClass("icon-minus")
+      $("#"+source.target.id+"_icon").addClass("active")
       $("#"+source.target.id+"_info").show("slow")
     else
       $("#"+source.target.id+"_icon").removeClass("icon-minus")
       $("#"+source.target.id+"_icon").addClass("icon-plus")
+      $("#"+source.target.id+"_icon").removeClass("active")
       $("#"+source.target.id+"_info").hide("slow")
 
   runBuild: (source)=>
