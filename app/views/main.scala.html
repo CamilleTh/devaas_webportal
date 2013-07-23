@@ -33,12 +33,12 @@
         <h1 class="title">Dimension Factory</h1>
         <nav style="font-size: 130%">
             <ul>
-                <li><a href="@routes.Application.index">Home</a></li>
+                <li><a href="@routes.Application.index" style="outline:0">Home</a></li>
                 @if(isLogged) {
-                <li><a href="@routes.Application.myCloud">My cloud</a></li>
-                <li><a href="@routes.Application.doLogout">Log out</a></li>
+                <li><a href="@routes.Application.myCloud" style="outline:0">My cloud</a></li>
+                <li><a href="@routes.Application.doLogout" style="outline:0">Log out</a></li>
                 } else {
-                <li><a href="@routes.Application.login">Login</a></li>
+                <li><a href="@routes.Application.login" style="outline:0">Login</a></li>
                 }
             </ul>
         </nav>

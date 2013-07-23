@@ -6,6 +6,7 @@ class AppDetailView extends Backbone.View
   templateGeneral: _.template( $('#template-app-general').html() )
   templateRepository: _.template( $('#template-app-repository').html() )
   templateBuild: _.template( $('#template-app-build').html() )
+  templateSubBuild: _.template( $('#template-app-sub-build').html() )
   templateStorage: _.template( $('#template-app-storage').html() )
   templateRuntime: _.template( $('#template-app-runtime').html() )
 
@@ -73,10 +74,12 @@ class AppDetailView extends Backbone.View
 
   showTabBuild: ()=>
     @currentTab="build"
-    @tabBuild.html(@templateLoading())
+    @tabBuild.html(@templateBuild())
+    @subBuildsDiv=$ "#subBuilds"
+    @subBuildsDiv.html(@templateLoading())
     $.get("/applications/"+@applicationId, (data)=>
       for fieldname, fieldvalue of data
-        @tabBuild.html("")
+        @subBuildsDiv.html("")
         if (fieldname == "envs")
           for name, value of fieldvalue
             for envname, val of value
@@ -86,15 +89,15 @@ class AppDetailView extends Backbone.View
                   res = lastBuildUrl.split "8080"
                   lastBuildUrl = res[0]+"8080/jenkins"+res[1]
                   data.lastBuildUrl = lastBuildUrl
-
                   @currentEnv=data.envName
-                  @tabBuild.append(@templateBuild(data))
-                  $("btnRunBuild").on "click", @runBuild
+                  @subBuildsDiv.append(@templateSubBuild(data))
+                  $("#"+@currentEnv+"_detail").on "click", @detailInfo
+                  $("#btnRunBuild").on "click", @runBuild
                 ).error (error)=>
-                    if error.status is 404 # Build doesn't exists
-                      @tabBuild.html(@templateBuild(
-                        jobUrl: null
-                      ))
+                  if error.status is 404 # Build doesn't exists
+                    @subBuildsDiv.html(@templateSubBuild(
+                      jobUrl: null
+                    ))
     ).error (error)=>
       console.log("error"+error)
 
@@ -125,6 +128,18 @@ class AppDetailView extends Backbone.View
   show: ()->
     if @$el.css("display") is "none"
       @$el.show("slow")
+
+  detailInfo: (source)=>
+    console.log(source)
+    if $("#"+source.target.id+"_icon").hasClass("icon-plus")
+      $("#"+source.target.id+"_icon").removeClass("icon-plus")
+      $("#"+source.target.id+"_icon").addClass("icon-minus")
+      $("#"+source.target.id+"_info").show("slow")
+    else
+      $("#"+source.target.id+"_icon").removeClass("icon-minus")
+      $("#"+source.target.id+"_icon").addClass("icon-plus")
+      $("#"+source.target.id+"_info").hide("slow")
+    console.log(source)
 
   runBuild: ()=>
     console.log "trigger a build of "+@applicationId

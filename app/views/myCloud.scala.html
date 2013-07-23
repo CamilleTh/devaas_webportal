@@ -250,45 +250,27 @@ git push
         <% } %>
     </script>
 
-    <script type="text/template" id="template-tmp-app-build">
+    <script type="text/template" id="template-app-build">
         <div>
-            <div class="infoData">
-
+            <div id="subBuilds" class="infoData" style="width: 78%">
             </div>
-            <div class="infoIcon">
-                <img src="@routes.Assets.at("images/icons/jenkins.png")" style="width: 150px"/>
+            <div class="infoIcon" style="width: 15%">
+                <img src="@routes.Assets.at("images/icons/jenkins.png")" style="width: 100%"/>
             </div>
         </div>
     </script>
 
-    <script type="text/template" id="template-app-build">
+    <script type="text/template" id="template-app-sub-build">
         <% if(jobUrl==null) { %>
         <div class="alert">
             <strong><%=envName%> Job : Warning!</strong> Jenkins job didn't exists. May be it's not yet created?
         </div>
         <% } else { %>
-        <div class="infoData">
-            <a href="#" style="outline:0" id="<%=envName%>_plus" onclick="
-                    document.getElementById(<%=envName%>_plus).removeClass('display');
-                    document.getElementById(<%=envName%>_plus).addClass('hidden');
-                    document.getElementById(<%=envName%>_minus).removeClass('hidden');
-                    document.getElementById(<%=envName%>_minus).addClass('display');
-                    document.getElementById(<%=envName%>_info).removeClass('hidden');
-                    document.getElementById(<%=envName%>_info).addClass('display');">
-                <i class="icon-plus"></i>
-            </a>
-            <a href="#" style="outline:0;display:none" id="<%=envName%>_minus" onclick="
-                    document.getElementById(<%=envName%>_minus).removeClass('display');
-                    document.getElementById(<%=envName%>_minus).addClass('hidden');
-                    document.getElementById(<%=envName%>_plus).removeClass('hidden');
-                    document.getElementById(<%=envName%>_plus).addClass('display');
-                    document.getElementById(<%=envName%>_info).removeClass('display');
-                    document.getElementById(<%=envName%>_info).addClass('hidden');">
-                <i class="icon-minus"></i>
-            </a>
-            <strong><%=envName%> Job:</strong> <a href="<%=jobUrl%>"><%=jobUrl%></a>
+        <div class="infoData" style="width:100%">
+            <button class="btn btn-warning btn-small" style="outline:0" id="<%=envName%>_detail"><i class="icon-white icon-plus" id="<%=envName%>_detail_icon"></i></button>
+            <strong><%=envName%> Job:</strong> <a href="<%=jobUrl%>" style="display:inline"><%=jobUrl%></a>
         </div>
-        <div class="appButtons infoData" style="display:none" id="<%=envName%>_info">
+        <div class="appButtons infoData" style="display:none" id="<%=envName%>_detail_info">
             <div>
                 <button class="btn btn-warning" style="display:inline" id="<%=envName%>_btnRunBuild">Trigger a build</button>
             </div>
@@ -342,7 +324,6 @@ git push
             </div>
         <% } %>
     </script>
-
 
     <script type="text/template" id="template-app-runtime">
         <% if(server===null) { %>
