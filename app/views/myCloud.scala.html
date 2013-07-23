@@ -278,8 +278,8 @@ git push
                 <% if(lastBuildStatus === "UNKNOWN") { %>
                     <div style="float:left" class="alert">Not built yet.</div>
                 <% } else { %>
-                    <strong>Last build date:</strong> <%=getDateFormat(new Date(lastBuildDate))%><br/>
-                    <strong>Status: </strong>
+                <!--  <strong>Last build date:</strong> <%=getDateFormat(new Date(lastBuildDate))%><br/>
+                    <strong>Status: </strong> -->
                 <% if (lastBuildStatus == "SUCCESS") { %>
                 <div style="float:left" class="label label-success">Success!</div>
                 <% } else if(lastBuildStatus == "FAILURE") { %>
@@ -287,7 +287,7 @@ git push
                 <% } else { %>
                 <div style="float:left" class="label label-info"><%=lastBuildStatus%></div>
                 <% } %>
-                <a href="<%=lastBuildUrl%>"><small>(see detail)</small></a>
+                <!-- <a href="<%=lastBuildUrl%>"><small>(see detail)</small></a>  -->
                 <br/>
                 <% } %>
             </div>
