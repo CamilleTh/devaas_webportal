@@ -92,17 +92,19 @@ class AppDetailView extends Backbone.View
                   @currentEnv=data.envName
                   @subBuildsDiv.append(@templateSubBuild(data))
                   $("#"+@currentEnv+"_detail").on "click", @detailInfo
-                  $("#btnRunBuild").on "click", @runBuild
+                  $("#"+@currentEnv+"_btnRunBuild").on "click", @runBuild
                 ).error (error)=>
                   if error.status is 404 # Build doesn't exists
                     @subBuildsDiv.html(@templateSubBuild(
                       jobUrl: null
                     ))
     ).error (error)=>
-      console.log("error"+error)
+      if error.status is 404 # Build doesn't exists
+        @tabBuild.html(@templateBuild(
+          jobUrl: null
+        ))
 
   showLog: ()=>
-    console.log("SHOW LOG")
     $.get("/logs/"+@applicationId, (data)=>
       $("#logarea").text(data)
     ).error (error)=>
@@ -130,7 +132,6 @@ class AppDetailView extends Backbone.View
       @$el.show("slow")
 
   detailInfo: (source)=>
-    console.log(source)
     if $("#"+source.target.id+"_icon").hasClass("icon-plus")
       $("#"+source.target.id+"_icon").removeClass("icon-plus")
       $("#"+source.target.id+"_icon").addClass("icon-minus")
@@ -139,17 +140,18 @@ class AppDetailView extends Backbone.View
       $("#"+source.target.id+"_icon").removeClass("icon-minus")
       $("#"+source.target.id+"_icon").addClass("icon-plus")
       $("#"+source.target.id+"_info").hide("slow")
-    console.log(source)
 
-  runBuild: ()=>
-    console.log "trigger a build of "+@applicationId
+  runBuild: (source)=>
+    console.log(source)
+    env = source.target.value
+    console.log(env)
     $.ajax(
       type: "GET",
-      url: "/builds/run/"+@applicationId+"/"+@currentEnv,
+      url: "/builds/run/"+@applicationId+"/"+env,
       contentType: "application/json",
       data: ""
     ).done ()=>
-      $("""<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">x</button>Build of application """+@applicationId+""" has been triggered...</div>""").insertBefore("div.applicationManager")
+      $("""<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">x</button>Build of application """+@applicationId+""" on the environment """+env+""" has been triggered...</div>""").insertBefore("div.applicationManager")
 
 
 window.app=window.app || {}
