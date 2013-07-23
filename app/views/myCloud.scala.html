@@ -290,7 +290,7 @@ git push
         </div>
         <div class="appButtons infoData"  id="<%=envName%>_info">
             <div>
-                <button class="btn btn-warning" style="display:inline" id="<%=envName%>_btnRunBuild">Trigger a build</button>
+                <button class="btn btn-warning" style="display:inline" value="<%=envName%>" id="<%=envName%>_btnRunBuild">Trigger a build</button>
             </div>
             <div style="overflow:hidden">
                 <% if(lastBuildStatus === "UNKNOWN") { %>

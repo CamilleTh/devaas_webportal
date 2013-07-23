@@ -86,20 +86,21 @@ class AppDetailView extends Backbone.View
                   res = lastBuildUrl.split "8080"
                   lastBuildUrl = res[0]+"8080/jenkins"+res[1]
                   data.lastBuildUrl = lastBuildUrl
-
                   @currentEnv=data.envName
                   @tabBuild.append(@templateBuild(data))
-                  $("btnRunBuild").on "click", @runBuild
+                  $("#"+data.envName+"_btnRunBuild").on "click", @runBuild
                 ).error (error)=>
                     if error.status is 404 # Build doesn't exists
                       @tabBuild.html(@templateBuild(
                         jobUrl: null
                       ))
     ).error (error)=>
-      console.log("error"+error)
+      if error.status is 404 # Build doesn't exists
+        @tabBuild.html(@templateBuild(
+          jobUrl: null
+        ))
 
   showLog: ()=>
-    console.log("SHOW LOG")
     $.get("/logs/"+@applicationId, (data)=>
       $("#logarea").text(data)
     ).error (error)=>
@@ -126,15 +127,16 @@ class AppDetailView extends Backbone.View
     if @$el.css("display") is "none"
       @$el.show("slow")
 
-  runBuild: ()=>
-    console.log "trigger a build of "+@applicationId
+  runBuild: (source)=>
+
+    env = source.target.value
     $.ajax(
       type: "GET",
-      url: "/builds/run/"+@applicationId+"/"+@currentEnv,
+      url: "/builds/run/"+@applicationId+"/"+env,
       contentType: "application/json",
       data: ""
     ).done ()=>
-      $("""<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">x</button>Build of application """+@applicationId+""" has been triggered...</div>""").insertBefore("div.applicationManager")
+      $("""<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">x</button>Build of application """+@applicationId+""" on the environment """+env+""" has been triggered...</div>""").insertBefore("div.applicationManager")
 
 
 window.app=window.app || {}

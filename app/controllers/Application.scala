@@ -22,6 +22,9 @@ import play.api.mvc.Security.Authenticated
 import scala.Predef._
 import actors.VMBootstrap.CreateNewVM
 import scala.Some
+import actors.VMBootstrap.CreateNewVM
+import scala.Some
+import play.api.libs.json.JsObject
 
 object Application extends Controller {
 
@@ -89,11 +92,21 @@ object Application extends Controller {
     }
   }}
 
-  def getStorageDetail(appId:String)=Secured{Action{
+
+
+  def getStorageDetail2(appId:String)={
+    println("###########")
+    println(appId)
+    println("###########")
+  }
+
+  def getStorageDetail(appId:String)={
+    Secured{Action{
     Async{
       cloudClient.getApplication(appId).flatMap{resp=>resp match{
           case Some(data)=>(data \ "storageType").as[String] match{
             case "mysql" =>
+              println("mysql")
               cloudClient.getStorageMySQL(appId).map{
                 case Some(data) =>
                   Some(toJson(Map(
@@ -106,7 +119,9 @@ object Application extends Controller {
                   )))
                 case _ => None
               }
-            case "mongo" => cloudClient.getStorageMongo(appId).map{
+            case "mongo" =>
+              println("mongo")
+              cloudClient.getStorageMongo(appId).map{
               case Some(data) =>
                 Some(toJson(Map(
                   "storageType"->toJson("mongo"),
@@ -129,6 +144,7 @@ object Application extends Controller {
       }
     }
   }}
+  }
 
   def getRepositoryDetail(appId:String)=Secured{Action{
     Async{
@@ -297,7 +313,7 @@ object Application extends Controller {
     Async{
       cloudClient.getJob(id).flatMap{
         case Some(data)=>
-          WS.url((data \ "normal" \ "ci-server" \ "jobs" \ id).as[String]+env+"/build").get().map{resp=>
+          WS.url((data \ "normal" \ "ci-server" \ "jobs" \ id \ env).as[String]+"/build").get().map{resp=>
             resp.status match {
               case 200 => true
               case _ => false
