@@ -16,7 +16,7 @@ GET         /builds/:id/:env             controllers.Application.getBuildDetail(
 GET         /runtimes/:id                controllers.Application.getRuntimeServer(id:String)
 GET         /users                       controllers.Application.getAllUsers
 
-GET         /builds/run/:id              controllers.Application.runApplicationBuild(id:String)
+GET         /builds/run/:id/:env         controllers.Application.runApplicationBuild(id:String,env:String)
 
 GET         /validate/appId              controllers.Application.validateAppId
 GET         /validate/username           controllers.Application.validateUsername

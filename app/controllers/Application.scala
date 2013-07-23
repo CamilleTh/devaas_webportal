@@ -164,7 +164,7 @@ object Application extends Controller {
         case _ => None
       }.flatMap{
         case Some(jobInfo)=>
-          cloudClient.getLastBuildStatus((jobInfo \ "jobInternalUrl").as[String]).map{
+          cloudClient.getLastBuildStatus((jobInfo \ "jobUrl").as[String]).map{
             case Some(lastBuild)=>
               Some(jobInfo.as[JsObject]++toJson(Map(
                   "lastBuildStatus"->lastBuild \ "result",
@@ -239,8 +239,6 @@ object Application extends Controller {
         users.foreach{user=>
             cloudClient.createUser(user._1,user._2)
         }
-
-
           //cloudClient.createApp(appId,appType,storageType,users).map{
           cloudClient.createApp2(appId, groupid, appType, storageType, users, envs).map{
             case Some(json)=>
@@ -295,11 +293,11 @@ object Application extends Controller {
     }
   }}
 
-  def runApplicationBuild(id:String)=Secured{Action{
+  def runApplicationBuild(id:String,env:String)=Secured{Action{
     Async{
       cloudClient.getJob(id).flatMap{
         case Some(data)=>
-          WS.url((data \ "normal" \ "ci-server" \ "jobs" \ id).as[String]+"/build").get().map{resp=>
+          WS.url((data \ "normal" \ "ci-server" \ "jobs" \ id).as[String]+env+"/build").get().map{resp=>
             resp.status match {
               case 200 => true
               case _ => false

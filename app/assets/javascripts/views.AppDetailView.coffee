@@ -23,6 +23,7 @@ class AppDetailView extends Backbone.View
     @tabBuild=$ "#tabBuild"
     @tabRuntime=$ "#tabRuntime"
     @currentTab="general"
+    @currentEnv="null"
 
     @render()
 
@@ -75,25 +76,27 @@ class AppDetailView extends Backbone.View
     @tabBuild.html(@templateLoading())
     $.get("/applications/"+@applicationId, (data)=>
       for fieldname, fieldvalue of data
+        @tabBuild.html("")
         if (fieldname == "envs")
           for name, value of fieldvalue
             for envname, val of value
               if(envname == "name")
-                @tabBuild.html("")
                 $.get("/builds/"+@applicationId+"/"+val, (data)=>
+                  lastBuildUrl = data.lastBuildUrl
+                  res = lastBuildUrl.split "8080"
+                  lastBuildUrl = res[0]+"8080/jenkins"+res[1]
+                  data.lastBuildUrl = lastBuildUrl
+
+                  @currentEnv=data.envName
                   @tabBuild.append(@templateBuild(data))
-                  $("#btnRunBuild").on "click", @runBuild
+                  $("btnRunBuild").on "click", @runBuild
                 ).error (error)=>
-      if error.status is 404 # Build doesn't exists
-        @tabBuild.html(@templateBuild(
-          jobUrl: null
-        ))
-        console.log("####")
+                    if error.status is 404 # Build doesn't exists
+                      @tabBuild.html(@templateBuild(
+                        jobUrl: null
+                      ))
     ).error (error)=>
       console.log("error"+error)
-
-
-
 
   showLog: ()=>
     console.log("SHOW LOG")
@@ -127,12 +130,11 @@ class AppDetailView extends Backbone.View
     console.log "trigger a build of "+@applicationId
     $.ajax(
       type: "GET",
-      url: "/builds/run/"+@applicationId,
+      url: "/builds/run/"+@applicationId+"/"+@currentEnv,
       contentType: "application/json",
       data: ""
     ).done ()=>
       $("""<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">x</button>Build of application """+@applicationId+""" has been triggered...</div>""").insertBefore("div.applicationManager")
-
 
 
 window.app=window.app || {}
