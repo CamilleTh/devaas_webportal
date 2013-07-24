@@ -300,7 +300,7 @@ object Application extends Controller {
           Ok(toJson(Map(
             "kibanaUrl"->data \ "normal" \ "log" \ "kibana" \ "url",
             "envName"-> toJson(env),
-            "appid"-> toJson(appId)
+            "appId"-> toJson(appId)
           )))
         case _ => NotFound
       }
