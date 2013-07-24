@@ -303,7 +303,8 @@ object Application extends Controller {
         case Some(data) =>
           Ok(toJson(Map(
             "kibanaUrl"->data \ "normal" \ "log" \ "kibana" \ "url",
-            "envName"-> toJson(env)
+            "envName"-> toJson(env),
+            "appid"-> toJson(appId)
           )))
         case _ => NotFound
       }
