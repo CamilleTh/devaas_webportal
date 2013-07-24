@@ -205,7 +205,7 @@
                     No public URL yet.
                 </div>
                 <% } else { %>
-                    <strong>URL :</strong> <a href="http://<%=url%>">http://<%=url%></a>
+                    <strong>URL :</strong> <a href="http://<%=url%>" target="_blank" style="display:inline;outline:0">http://<%=url%></a>
                 <% } %>
             </div>
             <div class="infoIcon">
@@ -224,7 +224,7 @@
                 <strong>Warning!</strong> Repository doesn't exists. Maybe it's not yet created?
             </div>
         <% } else { %>
-            <strong>Git repository:</strong> <%= path %> <a href="#" onclick="$('#cloneCode').toggle()"><small>(Clone it!)</small></a><br/>
+            <strong>Git repository:</strong> <%= path %> <a href="#" onclick="$('#cloneCode').toggle()" style="display:inline;outline:0"><small>(Clone it!)</small></a><br/>
             <pre id="cloneCode" style="display: none; margin-top: 20px">
 # Clone this repository to your local workstation
 git clone <%=path%>
@@ -239,7 +239,7 @@ git push
                 <ul>
                     <% _.each(users, function(user) { %>
                     <li>
-                        <%= user.username %> <a href="#" onclick="$('#sshKey-<%=user.username%>').toggle()"><small>(show key)</small></a>
+                        <%= user.username %> <a href="#" onclick="$('#sshKey-<%=user.username%>').toggle()" style="display:inline;outline:0"><small>(show key)</small></a>
                         <pre id="sshKey-<%=user.username%>" style="display: none">
 <%=user['ssh-pub-key']%>
                         </pre>
@@ -275,7 +275,7 @@ git push
         <% } else { %>
         <div class="infoData" style="width:100%">
             <button class="btn btn-warning btn-small" style="outline:0" id="<%=envName%>_detail"><i class="icon-white icon-plus" id="<%=envName%>_detail_icon"></i></button>
-            <strong><%=envName%> Job:</strong> <a href="<%=jobUrl%>" style="display:inline"><%=jobUrl%></a>
+            <strong><%=envName%> Job:</strong> <a href="<%=jobUrl%>" target="_blank" style="display:inline;outline:0"><%=jobUrl%></a>
         </div>
         <div class="appButtons infoData" style="display:none" id="<%=envName%>_detail_info">
             <div style="overflow:hidden">
@@ -292,7 +292,7 @@ git push
                     <% } else { %>
                     <span class="label label-info"><%=lastBuildStatus%></span>
                     <% } %>
-                    <a href="<%=lastBuildUrl%>"><small>(see detail)</small></a>
+                    <a href="<%=lastBuildUrl%>" target="_blank" style="display:inline;outline:0"><small>(see details)</small></a>
                 </div>
                 <br/>
                 <% } %>
