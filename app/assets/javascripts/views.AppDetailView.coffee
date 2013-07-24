@@ -145,7 +145,7 @@ class AppDetailView extends Backbone.View
             for envname, val of value
               if(envname == "name")
                 $.get("/kibana/"+@applicationId+"/"+val, (data)=>
-                  data.kibanaUrl = data.kibanaUrl+"/#"+Base64.encode64("{\"search\":\" @fields.application:\\\""+data.appId+"\\\" AND @fields.environment:\\\""+data.envName+"\\\"\",\"fields\":[],\"offset\":0,\"timeframe\":\"all\",\"graphmode\":\"count\",\"time\":{\"user_interval\":0},\"stamp\":0,\"mode\":\"\",\"analyze_field\":\"\"}")
+                  data.kibanaUrl = data.kibanaUrl+"/#"+Base64.encode64("{\"search\":\" @fields.application:\\\""+data.appId+"\\\" AND @fields.environment:\\\""+data.envName+"\\\"\",\"fields\":[],\"offset\":0,\"timeframe\":\"all\",\"graphmode\":\"count\",\"time\":{\"user_interval\":0},\"stamp\":0,\"mode\":\"\",\"analyze_field\":\",\"}")
                   @subMonitoringDiv.append(@templateSubMonitoring(data))
                 ).error (error)=>
                   console.log(error)
@@ -154,7 +154,6 @@ class AppDetailView extends Backbone.View
         @tabMonitoring.html(@templateMonitoring(
           status: null
         ))
-
 
   hide: ()->
     if @$el.css("display") isnt "none"
