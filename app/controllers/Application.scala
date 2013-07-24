@@ -92,21 +92,13 @@ object Application extends Controller {
     }
   }}
 
-
-
-  def getStorageDetail2(appId:String)={
-    println("###########")
-    println(appId)
-    println("###########")
-  }
-
   def getStorageDetail(appId:String)={
     Secured{Action{
     Async{
       cloudClient.getApplication(appId).flatMap{resp=>resp match{
         case Some(data)=>(data \ "storageType").as[String] match{
             case "mysql" =>
-              println("mysql")
+              println("mysql############mysql############mysql############mysql############mysql############mysql############mysql############")
               cloudClient.getStorageMySQL(appId).map{
                 case Some(data) =>
                   Some(toJson(Map(
@@ -120,18 +112,18 @@ object Application extends Controller {
                 case _ => None
               }
             case "mongo" =>
-              println("mongo")
+              println("mongo############mongo############mongo############mongo############mongo############mongo############mongo############mongo############")
               cloudClient.getStorageMongo(appId).map{
-              case Some(data) =>
-                Some(toJson(Map(
-                  "storageType"->toJson("mongo"),
-                  "dbName"->data \ "normal" \ "storage" \ "mongodb" \ appId \ "dbName",
-                  "user"->data \ "normal" \ "storage" \ "mongodb" \ appId \ "user",
-                  "password"->data \ "normal" \ "storage" \ "mongodb" \ appId \ "password",
-                  "server"->data \ "automatic" \ "ipaddress",
-                  "port"->data \ "default" \ "mongodb" \ "port"
-                )))
-              case _ => None
+                case Some(data) =>
+                  Some(toJson(Map(
+                    "storageType"->toJson("mongo"),
+                    "dbName"->data \ "normal" \ "storage" \ "mongodb" \ appId \ "dbName",
+                    "user"->data \ "normal" \ "storage" \ "mongodb" \ appId \ "user",
+                    "password"->data \ "normal" \ "storage" \ "mongodb" \ appId \ "password",
+                    "server"->data \ "automatic" \ "ipaddress",
+                    "port"->data \ "default" \ "mongodb" \ "port"
+                  )))
+                case _ => None
             }
             case "none" => Promise.pure(Some(toJson(Map("storageType"->toJson("none")))))
             case _ => Promise.pure(None)
