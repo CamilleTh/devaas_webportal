@@ -201,18 +201,6 @@ object Application extends Controller {
     }
   }}
 
-  def getKibanaUrl(appId:String,env:String)=Secured{Action{result=>
-    Async{
-      cloudClient.getKibana().map{
-        case Some(data) =>
-          Ok(toJson(Map(
-            "kibanaUrl"-> toJson(((data  \ "kibanaURL").as[String].trim)+"#"+(new sun.misc.BASE64Encoder().encode(("{\\\"search\\\":\\\" @fields.application:\\\\\\\"\"+appId+\"\\\\\\\" AND @fields.environment:\\\\\\\"\"+env+\"\\\\\\\"\\\",\\\"fields\\\":[],\\\"offset\\\":0,\\\"timeframe\\\":\\\"900\\\",\\\"graphmode\\\":\\\"count\\\",\\\"time\\\":{\\\"user_interval\\\":0},\\\"stamp\\\":1374658078653,\\\"mode\\\":\\\"\\\",\\\"analyze_field\\\":\\\"\\\"}").getBytes()))),
-            "envName"-> toJson(env)
-          )))
-        case _ => NotFound
-      }
-    }
-  }}
 
   def validateAppId=Secured{Action{request=>
     Async{
@@ -300,6 +288,23 @@ object Application extends Controller {
         case _ => Promise.pure(None)
       }.map{
         case Some(users)=> Ok(users)
+        case _ => NotFound
+      }
+    }
+  }}
+
+
+
+
+
+  def getKibanaUrl(appId:String,env:String)=Secured{Action{result=>
+    Async{
+      cloudClient.getKibana().map{
+        case Some(data) =>
+          Ok(toJson(Map(
+            "kibanaUrl"->data \ "normal" \ "log" \ "kibana" \ "url",
+            "envName"-> toJson(env)
+          )))
         case _ => NotFound
       }
     }

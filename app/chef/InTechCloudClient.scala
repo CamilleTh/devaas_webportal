@@ -81,7 +81,7 @@ class InTechCloudClient(val chefServerURL:String, val chefServerBasePath:String,
     chefClient.searchUniqueResult(chefServerBasePath+"/search/node","ci-server_jobs:%s".format(appId))
 
   def getKibana()=
-    chefClient.searchUniqueResult(chefServerBasePath+"/search/node","kibanaURL")
+    chefClient.searchUniqueResult(chefServerBasePath+"/search/node","log_kibana:url")
 
   def existsAppId(appId:String)=
     chefClient.doGet(chefServerBasePath+"/search/apps",Some(Map("q"->"id:%s".format(appId)))).map{
