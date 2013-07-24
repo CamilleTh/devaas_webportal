@@ -104,7 +104,7 @@ object Application extends Controller {
     Secured{Action{
     Async{
       cloudClient.getApplication(appId).flatMap{resp=>resp match{
-          case Some(data)=>(data \ "storageType").as[String] match{
+        case Some(data)=>(data \ "storageType").as[String] match{
             case "mysql" =>
               println("mysql")
               cloudClient.getStorageMySQL(appId).map{
@@ -305,7 +305,7 @@ object Application extends Controller {
     }
   }}
 
-  def getRuntimeServer(appId:String)=Secured{Action{
+  def getRuntimeServer(appId:String): Action[(Action[AnyContent], AnyContent)] =Secured{Action{
     Async{
       cloudClient.getRuntimeServer(appId).map{
         case Some(data) =>
@@ -321,7 +321,7 @@ object Application extends Controller {
     }
   }}
 
-  def runApplicationBuild(id:String,env:String)=Secured{Action{
+  def runApplicationBuild(id:String,env:String): Action[(Action[AnyContent], AnyContent)] =Secured{Action{
     Async{
       cloudClient.getJob(id).flatMap{
         case Some(data)=>
