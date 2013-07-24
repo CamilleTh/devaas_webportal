@@ -293,10 +293,6 @@ object Application extends Controller {
     }
   }}
 
-
-
-
-
   def getKibanaUrl(appId:String,env:String)=Secured{Action{result=>
     Async{
       cloudClient.getKibana().map{
