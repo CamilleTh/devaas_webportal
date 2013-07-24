@@ -145,7 +145,7 @@ class AppDetailView extends Backbone.View
             for envname, val of value
               if(envname == "name")
                 $.get("/kibana/"+@applicationId+"/"+val, (data)=>
-                  console.log("data",data)
+                  data.kibanaUrl = data.kibanaUrl+"/#"+Base64.encode64("{\"search\":\" @fields.application:\\\""+data.appId+"\\\" AND @fields.environment:\\\""+data.envName+"\\\"\",\\\"fields\":[],\"offset\":0,\"timeframe\":\"900\",\"graphmode\":\"count\",\"time\":{\"user_interval\":0},\"stamp\":1374658078653,\"mode\":\"\",\"analyze_field\":\"\"}")
                   @subMonitoringDiv.append(@templateSubMonitoring(data))
                 ).error (error)=>
                   console.log(error)

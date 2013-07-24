@@ -293,10 +293,6 @@ object Application extends Controller {
     }
   }}
 
-
-
-
-
   def getKibanaUrl(appId:String,env:String)=Secured{Action{result=>
     Async{
       cloudClient.getKibana().map{
@@ -304,7 +300,7 @@ object Application extends Controller {
           Ok(toJson(Map(
             "kibanaUrl"->data \ "normal" \ "log" \ "kibana" \ "url",
             "envName"-> toJson(env),
-            "appid"-> toJson(appId)
+            "appId"-> toJson(appId)
           )))
         case _ => NotFound
       }
