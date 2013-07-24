@@ -14,6 +14,7 @@ GET         /storages/:id                controllers.Application.getStorageDetai
 GET         /repositories/:id            controllers.Application.getRepositoryDetail(id:String)
 GET         /builds/:id/:env             controllers.Application.getBuildDetail(id:String,env:String)
 GET         /runtimes/:id                controllers.Application.getRuntimeServer(id:String)
+GET         /kibana/:id/:env             controllers.Application.getKibanaUrl(id:String,env:String)
 GET         /users                       controllers.Application.getAllUsers
 
 GET         /builds/run/:id/:env         controllers.Application.runApplicationBuild(id:String,env:String)

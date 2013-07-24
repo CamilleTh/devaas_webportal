@@ -171,7 +171,6 @@ object Application extends Controller {
     Async{
       cloudClient.getJob(appId).map{
         case Some(data)=>
-          System.out.println(data)
           Some(toJson(Map(
             "jobUrl"->data \ "normal" \ "ci-server" \ "jobs" \ appId \ env,
             "jobInternalUrl"-> toJson("http://"+(data \ "automatic" \ "ipaddress").as[String]+":8080/job/"+appId),
@@ -197,6 +196,19 @@ object Application extends Controller {
         case _ => Promise.pure(None)
       }.map{
         case Some(data)=>Ok(data)
+        case _ => NotFound
+      }
+    }
+  }}
+
+  def getKibanaUrl(appId:String,env:String)=Secured{Action{result=>
+    Async{
+      cloudClient.getKibana().map{
+        case Some(data) =>
+          Ok(toJson(Map(
+            "kibanaUrl"-> toJson(((data  \ "kibanaURL").as[String].trim)+"#"+(new sun.misc.BASE64Encoder().encode(("{\\\"search\\\":\\\" @fields.application:\\\\\\\"\"+appId+\"\\\\\\\" AND @fields.environment:\\\\\\\"\"+env+\"\\\\\\\"\\\",\\\"fields\\\":[],\\\"offset\\\":0,\\\"timeframe\\\":\\\"900\\\",\\\"graphmode\\\":\\\"count\\\",\\\"time\\\":{\\\"user_interval\\\":0},\\\"stamp\\\":1374658078653,\\\"mode\\\":\\\"\\\",\\\"analyze_field\\\":\\\"\\\"}").getBytes()))),
+            "envName"-> toJson(env)
+          )))
         case _ => NotFound
       }
     }

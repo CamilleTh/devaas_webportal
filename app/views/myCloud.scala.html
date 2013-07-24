@@ -21,6 +21,7 @@
                        <li><a class="tabBuildMenu" style="outline:0" href="#tabBuild" data-toggle="tab">Build</a></li>
                        <li><a class="tabStorageMenu" style="outline:0" href="#tabStorage" data-toggle="tab">Storage</a></li>
                        <li><a class="tabRuntimeMenu" style="outline:0" href="#tabRuntime" data-toggle="tab">Runtime</a></li>
+                       <li><a class="tabMonitoringMenu" style="outline:0" href="#tabMonitoring" data-toggle="tab">Monitoring</a></li>
                    </ul>
                    <div class="tab-content thumbnail">
                        <div class="tab-pane active" id="tabGeneral">
@@ -32,6 +33,8 @@
                        <div class="tab-pane" id="tabStorage">
                        </div>
                        <div class="tab-pane" id="tabRuntime">
+                       </div>
+                       <div class="tab-pane" id="tabMonitoring">
                        </div>
                    </div>
                </div>
@@ -224,25 +227,28 @@
                 <strong>Warning!</strong> Repository doesn't exists. Maybe it's not yet created?
             </div>
         <% } else { %>
-            <strong>Git repository:</strong> <%= path %> <a href="#" onclick="$('#cloneCode').toggle()" style="display:inline;outline:0"><small>(Clone it!)</small></a><br/>
-            <pre id="cloneCode" style="display: none; margin-top: 20px">
-# Clone this repository to your local workstation
+            <strong>Git repository:</strong> <%= path %>
+            <br/>
+            <br/>
+            <div>
+                <a href="#" onclick="$('#cloneCode').toggle()" style="display:inline;outline:0">
+                    <button class="btn btn-warning" style="outline:0;size:80%"> Clone it !</button>
+                </a>
+                <pre id="cloneCode" style="display: none; margin-top: 20px"># Clone this repository to your local workstation
 git clone <%=path%>
 # Make some modification, and then
 git add -A
 git commit -m "New release"
 # Push to trigger build & deploy
-git push
-            </pre>
+git push</pre>
+            </div>
             <p style="margin-top: 20px">
                 <strong>Repository users:</strong><br/>
                 <ul>
                     <% _.each(users, function(user) { %>
                     <li>
                         <%= user.username %> <a href="#" onclick="$('#sshKey-<%=user.username%>').toggle()" style="display:inline;outline:0"><small>(show key)</small></a>
-                        <pre id="sshKey-<%=user.username%>" style="display: none">
-<%=user['ssh-pub-key']%>
-                        </pre>
+                        <pre id="sshKey-<%=user.username%>" style="display: none"><%=user['ssh-pub-key']%></pre>
                     </li>
                     <% }); %>
                 </ul>
@@ -363,6 +369,21 @@ git push
         <% } %>
     </script>
 
+    <script type="text/template" id="template-app-monitoring">
+        <div>
+            <div id="subMonitoring" class="infoData" style="width: 78%">
+            </div>
+            <div class="infoIcon" style="width: 15%">
+                <img src="@routes.Assets.at("images/icons/logstash.png")" style="width: 100%"/>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template" id="template-app-sub-monitoring">
+        <div class="infoData" style="width:100%">
+            <strong><%=envName%> Job:</strong> <a href="<%=monitoringUrl%>" target="_blank" style="display:inline;outline:0"><%=kibanaUrl%></a>
+        </div>
+    </script>
 
     <script type="text/javascript">
         function getDateFormat(date){

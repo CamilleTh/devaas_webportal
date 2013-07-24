@@ -9,6 +9,8 @@ class AppDetailView extends Backbone.View
   templateSubBuild: _.template( $('#template-app-sub-build').html() )
   templateStorage: _.template( $('#template-app-storage').html() )
   templateRuntime: _.template( $('#template-app-runtime').html() )
+  templateMonitoring: _.template( $('#template-app-monitoring').html() )
+  templateSubMonitoring: _.template( $('#template-app-sub-monitoring').html() )
 
   events:
     "click .tabGeneralMenu": "showTabGeneral"
@@ -16,6 +18,7 @@ class AppDetailView extends Backbone.View
     "click .tabStorageMenu": "showTabStorage"
     "click .tabBuildMenu": "showTabBuild"
     "click .tabRuntimeMenu": "showTabRuntime"
+    "click .tabMonitoringMenu": "showTabMonitoring"
 
   initialize: ()->
     @tabGeneral=$ "#tabGeneral"
@@ -23,6 +26,7 @@ class AppDetailView extends Backbone.View
     @tabRepository=$ "#tabRepository"
     @tabBuild=$ "#tabBuild"
     @tabRuntime=$ "#tabRuntime"
+    @tabMonitoring=$ "#tabMonitoring"
     @currentTab="general"
     @currentEnv="null"
 
@@ -40,6 +44,7 @@ class AppDetailView extends Backbone.View
       @showTabRepository() if(@currentTab is "repository")
       @showTabBuild() if(@currentTab is "build")
       @showTabRuntime() if(@currentTab is "runtime")
+      @showTabMonitoring() if(@currentTab is "monitoring")
     @
 
   showTabGeneral: ()=>
@@ -126,6 +131,30 @@ class AppDetailView extends Backbone.View
           server: null
           type: "unknown"
         ))
+
+  showTabMonitoring: ()=>
+    @currentTab="monitoring"
+    @tabMonitoring.html(@templateMonitoring(status:"ok"))
+    @subMonitoringDiv=$ "#subMonitoring"
+    @subMonitoringDiv.html(@templateLoading())
+    $.get("/applications/"+@applicationId, (data)=>
+      for fieldname, fieldvalue of data
+        @subMonitoringDiv.html("")
+        if (fieldname == "envs")
+          for name, value of fieldvalue
+            for envname, val of value
+              if(envname == "name")
+                $.get("/kibana/"+@applicationId+"/"+val, (data)=>
+                  console.log("data",data)
+                  @subMonitoringDiv.append(@templateSubMonitoring(data))
+                ).error (error)=>
+                  console.log(error)
+    ).error (error)=>
+      if error.status is 404 # Monitoring not found in Chef
+        @tabMonitoring.html(@templateMonitoring(
+          status: null
+        ))
+
 
   hide: ()->
     if @$el.css("display") isnt "none"
