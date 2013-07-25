@@ -4,6 +4,7 @@ class AppDetailView extends Backbone.View
 
   templateLoading: _.template( $('#template-app-loading').html() )
   templateGeneral: _.template( $('#template-app-general').html() )
+  templateSubGeneral: _.template( $('#template-app-sub-general').html() )
   templateRepository: _.template( $('#template-app-repository').html() )
   templateBuild: _.template( $('#template-app-build').html() )
   templateSubBuild: _.template( $('#template-app-sub-build').html() )
@@ -50,8 +51,23 @@ class AppDetailView extends Backbone.View
   showTabGeneral: ()=>
     @currentTab="general"
     @tabGeneral.html(@templateLoading())
+
     $.get("/applications/"+@applicationId, (data)=>
       @tabGeneral.html(@templateGeneral(data))
+      @subURL=$ "#subUrls"
+      for fieldname, fieldvalue of data
+        if(fieldname == "url")
+          console.log('fieldname',fieldname)
+          console.log('fieldvalue',fieldvalue)
+          if(fieldvalue != "none")
+            for envName, url of fieldvalue
+              console.log('envName',envName)
+              console.log('url',url)
+              @subURL.append(@templateSubGeneral(
+                envName : envName,
+                envUrl : url
+              ))
+
     )
 
   showTabStorage: ()=>

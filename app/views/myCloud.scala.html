@@ -199,27 +199,31 @@
 
     <script type="text/template" id="template-app-general">
         <div>
-            <div class="infoData">
-                <strong>Name:</strong> <%=id%><br/>
-                <strong>Type:</strong> <%=type%><br/>
-                <strong>Storage:</strong> <%=storageType%><br/><br/>
-                <% if(url === "none") { %>
-                <div class="alert">
-                    No public URL yet.
+            <div style="width: 68%" class="infoData">
+                <div>
+                    <strong>Name:</strong> <%=id%><br/>
+                    <strong>Type:</strong> <%=type%><br/>
+                    <strong>Storage:</strong> <%=storageType%><br/><br/>
                 </div>
-                <% } else { %>
-                    <strong>URL :</strong> <a href="http://<%=url%>" target="_blank" style="display:inline;outline:0">http://<%=url%></a>
-                <% } %>
+                <div id="subUrls" >
+                </div>
             </div>
-            <div class="infoIcon">
+            <div class="infoIcon" style="width:25%">
                 <% if(type=="typesafe") {%>
-                <img src="@routes.Assets.at("images/typesafe.png")" style="width:150px"/>
+                <img src="@routes.Assets.at("images/typesafe.png")" style="width:100%"/>
                 <% } else if(type=="J2EE") {%>
-                <img src="@routes.Assets.at("images/j2ee_logo.png")" style="width:150px"/>
+                <img src="@routes.Assets.at("images/j2ee_logo.png")" style="width:100%"/>
                 <% }%>
             </div>
         </div>
     </script>
+
+<script type="text/template" id="template-app-sub-general">
+    <div>
+        <strong>URL of <%=envName%> :</strong> <a href="http://<%=envUrl%>" target="_blank" style="display:inline;outline:0"><%=envUrl%></a>
+    </div>
+</script>
+
 
     <script type="text/template" id="template-app-repository">
         <% if(path===null) { %>
