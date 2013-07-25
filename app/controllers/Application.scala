@@ -70,7 +70,7 @@ object Application extends Controller {
     Async{
       cloudClient.getApplication(appId).flatMap{
           case Some(detail)=>
-            cloudClient.getHostingProxy(appId).map{
+              cloudClient.getHostingProxy(appId).map{
               case Some(proxy) =>
                 Some(
                   detail.as[JsObject]++toJson(Map(
@@ -98,7 +98,6 @@ object Application extends Controller {
       cloudClient.getApplication(appId).flatMap{resp=>resp match{
         case Some(data)=>(data \ "storageType").as[String] match{
             case "mysql" =>
-              println("mysql############mysql############mysql############mysql############mysql############mysql############mysql############")
               cloudClient.getStorageMySQL(appId).map{
                 case Some(data) =>
                   Some(toJson(Map(
@@ -112,7 +111,6 @@ object Application extends Controller {
                 case _ => None
               }
             case "mongo" =>
-              println("mongo############mongo############mongo############mongo############mongo############mongo############mongo############mongo############")
               cloudClient.getStorageMongo(appId).map{
                 case Some(data) =>
                   Some(toJson(Map(
