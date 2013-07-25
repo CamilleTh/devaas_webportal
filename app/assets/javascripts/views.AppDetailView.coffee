@@ -165,6 +165,7 @@ class AppDetailView extends Backbone.View
 
   showTabMonitoring: ()=>
     @currentTab="monitoring"
+    @tabMonitoring.html("")
     @tabMonitoring.html(@templateMonitoring(status:"ok"))
     @subMonitoringDiv=$ "#subMonitoring"
     @monitoringLoading=$ "#monitoringLoading"
@@ -186,7 +187,9 @@ class AppDetailView extends Backbone.View
         @tabMonitoring.html(@templateMonitoring(
           status: null
         ))
-    @monitoringLoading.html("")
+    .complete (data)=>
+        @monitoringLoading.html("")
+
 
   hide: ()->
     if @$el.css("display") isnt "none"
