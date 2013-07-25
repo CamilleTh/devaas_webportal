@@ -165,14 +165,12 @@ class AppDetailView extends Backbone.View
 
   showTabMonitoring: ()=>
     @currentTab="monitoring"
-    @tabMonitoring.html("")
     @tabMonitoring.html(@templateMonitoring(status:"ok"))
     @subMonitoringDiv=$ "#subMonitoring"
-    @monitoringLoading=$ "#monitoringLoading"
-    @subMonitoringDiv.html("")
-    @monitoringLoading.html(@templateLoading())
+    @subMonitoringDiv.html(@templateLoading())
     $.get("/applications/"+@applicationId, (data)=>
       for fieldname, fieldvalue of data
+        @subMonitoringDiv.html("")
         if (fieldname == "envs")
           for name, value of fieldvalue
             for envname, val of value
@@ -187,9 +185,6 @@ class AppDetailView extends Backbone.View
         @tabMonitoring.html(@templateMonitoring(
           status: null
         ))
-    .complete (data)=>
-        @monitoringLoading.html("")
-
 
   hide: ()->
     if @$el.css("display") isnt "none"
