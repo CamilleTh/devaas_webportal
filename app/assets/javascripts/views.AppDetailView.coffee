@@ -96,7 +96,7 @@ class AppDetailView extends Backbone.View
                   data.lastBuildUrl = lastBuildUrl
                   @currentEnv=data.envName
                   @subBuildsDiv.append(@templateSubBuild(data))
-                  $("#"+@currentEnv+"_detail").on "click", @detailInfo
+                  $("#"+@currentEnv+"_detail").on "click", @buildJobInfo
                   $("#"+@currentEnv+"_btnRunBuild").on "click", @runBuild
                 ).error (error)=>
                   if error.status is 404 # Build doesn't exists
@@ -163,7 +163,7 @@ class AppDetailView extends Backbone.View
     if @$el.css("display") is "none"
       @$el.show("slow")
 
-  detailInfo: (source)=>
+  buildJobInfo: (source)=>
     if $("#"+source.target.id+"_icon").hasClass("icon-plus")
       $("#"+source.target.id+"_icon").removeClass("icon-plus")
       $("#"+source.target.id+"_icon").addClass("icon-minus")
