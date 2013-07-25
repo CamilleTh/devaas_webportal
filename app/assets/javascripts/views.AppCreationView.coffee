@@ -8,7 +8,6 @@ class AppCreationView extends Backbone.View
 
 
   events:
-    "click  #cancelBtn": "clear"
     "click  #createBtn": "create"
     "blur #inputAppName": "validateAppName"
 
@@ -49,9 +48,6 @@ class AppCreationView extends Backbone.View
   show: ()->
     if @$el.css("display") is "none"
       @$el.show("slow")
-
-  clear: ()=>
-    @hide()
 
   validateAppName: (event,andThen)->
     $.get "/validate/appId?appId="+@fieldAppName.val(), (result)=>

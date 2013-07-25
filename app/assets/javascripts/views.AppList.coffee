@@ -22,6 +22,9 @@ class AppListView extends Backbone.View
   selectApplication: (id)=>
     @selected=id
 
+  unselect: ()=>
+    @selected=false
+
 window.app=window.app || {}
 window.app.views=window.app.views || {}
 window.app.views.AppListView=AppListView

@@ -9,6 +9,7 @@ class MyCloudRouter extends Backbone.Router
   routes:
     "application/:id": "getApplication"
     "newApplication": "newApplication"
+    "cancel": "cancelNewApp"
 
   getApplication: (id)->
     @creationView.hide()
@@ -18,7 +19,12 @@ class MyCloudRouter extends Backbone.Router
 
   newApplication: ()->
     @detailView.hide()
+    @listView.unselect()
+    @listView.render()
     @creationView.show()
+
+  cancelNewApp: ()->
+    @creationView.hide()
 
 window.app=window.app || {}
 window.app.routers=window.app.routers || {}
