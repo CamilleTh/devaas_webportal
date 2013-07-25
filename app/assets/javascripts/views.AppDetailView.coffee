@@ -74,7 +74,22 @@ class AppDetailView extends Backbone.View
     @currentTab="storage"
     @tabStorage.html(@templateLoading())
     $.get("/storages/"+@applicationId, (data)=>
-      @tabStorage.html(@templateStorage(data))
+      console.log(data)
+      @tabStorage.html("");
+      for fieldname, fieldvalue of data
+        if (fieldname == "envs")
+          console.log("fieldvalue",fieldvalue)
+          for env, envAttrs of fieldvalue
+            @tabStorage.append(@templateStorage(
+              env : env
+              storageType : data.storageType
+              dbName : envAttrs.dbName
+              user : envAttrs.user
+              server : envAttrs.url
+              password : envAttrs.password
+              port : envAttrs.port
+            ))
+
     ).error (error)=>
       if error.status is 404 # Storage doesn't exists
         @tabStorage.html(@templateStorage(
