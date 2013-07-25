@@ -169,8 +169,8 @@ class AppDetailView extends Backbone.View
     @subMonitoringDiv=$ "#subMonitoring"
     @subMonitoringDiv.html(@templateLoading())
     $.get("/applications/"+@applicationId, (data)=>
+      @subMonitoringDiv.html("")
       for fieldname, fieldvalue of data
-        @subMonitoringDiv.html("")
         if (fieldname == "envs")
           for name, value of fieldvalue
             for envname, val of value
