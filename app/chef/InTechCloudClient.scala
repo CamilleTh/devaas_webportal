@@ -65,6 +65,19 @@ class InTechCloudClient(val chefServerURL:String, val chefServerBasePath:String,
       }
     }
 
+  def findAllEnvironmentById(appId:String)=
+    chefClient.doGet(chefServerBasePath+"/data/apps/"+appId).map{resp=>
+      resp match {
+        case Some(data)=>
+          Some(JsArray(data.asInstanceOf[JsObject].keys.map{app=>
+            toJson(Map(
+              "name"->toJson(app)
+            ))
+          }.toList))
+        case _ => None
+      }
+  }
+
   def getApplication(appId:String)=
     chefClient.doGet(chefServerBasePath+"/data/apps/"+appId)
 
@@ -75,7 +88,7 @@ class InTechCloudClient(val chefServerURL:String, val chefServerBasePath:String,
     chefClient.searchUniqueResult(chefServerBasePath+"/search/node","storage_mongodb:%s".format(appId))
 
   def getRepository(appId:String)=
-    chefClient.searchUniqueResult(chefServerBasePath+"/search/node","ci-server_repositories:%s".format(appId))
+    chefClient.searchUniqueResult(chefServerBasePath+"/search/node","repositories:%s".format(appId))
 
   def getJob(appId:String)=
     chefClient.searchUniqueResult(chefServerBasePath+"/search/node","ci-server_jobs:%s".format(appId))
