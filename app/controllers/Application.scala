@@ -147,7 +147,7 @@ object Application extends Controller {
             cloudClient.getRepository(appId).map{
               case Some(repoData) =>
                 Some(toJson(Map(
-                  "path"->repoData \ "normal" \ "ci-server" \ "repositories" \ appId,
+                  "path"->repoData \ "normal" \ "repositories" \ appId,
                   "users"->appData \ "users"
                 )))
               case _ => None

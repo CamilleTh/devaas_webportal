@@ -87,7 +87,7 @@ class InTechCloudClient(val chefServerURL:String, val chefServerBasePath:String,
     chefClient.searchUniqueResult(chefServerBasePath+"/search/node","storage_mongodb:%s".format(appId))
 
   def getRepository(appId:String)=
-    chefClient.searchUniqueResult(chefServerBasePath+"/search/node","ci-server_repositories:%s".format(appId))
+    chefClient.searchUniqueResult(chefServerBasePath+"/search/node","repositories:%s".format(appId))
 
   def getJob(appId:String)=
     chefClient.searchUniqueResult(chefServerBasePath+"/search/node","ci-server_jobs:%s".format(appId))
