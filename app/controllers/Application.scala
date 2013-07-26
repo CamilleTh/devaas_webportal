@@ -48,11 +48,10 @@ object Application extends Controller {
 
   def getAllApplication=Secured{Action{
     Async{
-        cloudClient.findAllApplications().map{app=>app match{
-            case Some(data) => Ok(data)
-            case _ => Ok("")
-          }
-        }
+      cloudClient.findAllApplications().map{app=>app match{
+        case Some(data) => Ok(data)
+        case _ => Ok("")
+      }}
     }
   }}
 
@@ -63,6 +62,15 @@ object Application extends Controller {
         case _ => Ok("")
       }
       }
+    }
+  }}
+
+  def getEnvsByApplication(appId:String)=Secured{Action{
+    Async{
+      cloudClient.findEnvsByApplication(appId).map{app=>app match{
+        case Some(data) => Ok(data)
+        case _ => Ok("")
+      }}
     }
   }}
 

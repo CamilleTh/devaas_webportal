@@ -65,6 +65,18 @@ class InTechCloudClient(val chefServerURL:String, val chefServerBasePath:String,
       }
     }
 
+  def findEnvsByApplication(appId:String)=
+    chefClient.doGet(chefServerBasePath+"/data/apps/"+appId).map{resp=>
+      resp match {
+        case Some(data)=>
+          Some(JsArray(data.asInstanceOf[JsObject].keys.map{env=>
+            toJson(data \ "envs"
+            )
+          }.toList).apply(0))
+        case _ => None
+      }
+    }
+
   def getApplication(appId:String)=
     chefClient.doGet(chefServerBasePath+"/data/apps/"+appId)
 

@@ -10,6 +10,7 @@ GET         /mycloud                     controllers.Application.myCloud
 GET         /applications                controllers.Application.getAllApplication
 PUT         /applications                controllers.Application.createApplication
 GET         /applications/:id            controllers.Application.getApplicationDetail(id:String)
+GET         /envs/:id                    controllers.Application.getEnvsByApplication(id:String)
 GET         /storages/:id                controllers.Application.getStorageDetail(id:String)
 GET         /repositories/:id            controllers.Application.getRepositoryDetail(id:String)
 GET         /builds/:id/:env             controllers.Application.getBuildDetail(id:String,env:String)

@@ -4,14 +4,21 @@
     <p>Here you see and modify existing applications.<br/>You can also bootstrap creation of new application.</p>
 
     <div class="applicationManager">
-        <div>
+        <div id="app-selection">
             <ul class="nav nav-pills nav-stacked thumbnail" id="app-list">
                 <div class="loading">
                     <img src="@routes.Assets.at("images/loading.gif")"/>
                     Loading...
                 </div>
             </ul>
-            <a href="#newApplication"><button class="btn btn-warning btn-large" style="outline:0;width:100%;size:120%"><i class="icon-white icon-plus"></i> New application</button></a>
+        </div>
+        <div id="env-selection">
+            <ul class="nav nav-pills nav-stacked thumbnail" id="env-list" style="display: none">
+                <div class="loading">
+                    <img src="@routes.Assets.at("images/loading.gif")"/>
+                    Loading...
+                </div>
+            </ul>
         </div>
         <div id="app-detail" class="detail" style="display: none">
                <div class="tabbable"> <!-- Only required for left/right tabs -->
@@ -178,6 +185,10 @@
         <a href="#application/<%=id%>"><%= id %></a>
     </script>
 
+    <script type="text/template" id="template-env-item">
+        <a href="#"><%= name %></a>
+    </script>
+
     <script type="text/template" id="template-app-loading">
         <div class="loading">
             <img src="@routes.Assets.at("images/loading.gif")"/>
@@ -227,36 +238,43 @@
 
     <script type="text/template" id="template-app-repository">
         <% if(path===null) { %>
-            <div class="alert">
-                <strong>Warning!</strong> Repository doesn't exists. Maybe it's not yet created?
-            </div>
+        <div class="alert">
+            <strong>Warning!</strong> Repository doesn't exists. Maybe it's not yet created?
+        </div>
         <% } else { %>
-            <strong>Git repository:</strong> <%= path %>
-            <br/>
-            <br/>
-            <div>
-                <a href="#" onclick="$('#cloneCode').toggle()" style="display:inline;outline:0">
-                    <button class="btn btn-warning" style="outline:0;size:80%"> Clone it !</button>
-                </a>
-                <pre id="cloneCode" style="display: none; margin-top: 20px"># Clone this repository to your local workstation
+        <div>
+            <div class="infoData" style="width: 78%">
+                <strong>Git repository:</strong> <%= path %>
+                <br/>
+                <br/>
+                <div>
+                    <a onclick="$('#cloneCode').toggle()" style="display:inline;outline:0">
+                        <button class="btn btn-warning" style="outline:0;size:80%"> Clone it !</button>
+                    </a>
+                    <pre id="cloneCode" style="display: none; margin-top: 20px"># Clone this repository to your local workstation
 git clone <%=path%>
 # Make some modification, and then
 git add -A
 git commit -m "New release"
 # Push to trigger build & deploy
 git push</pre>
+                </div>
+                <p style="margin-top: 20px">
+                    <strong>Repository users:</strong><br/>
+                    <ul>
+                        <% _.each(users, function(user) { %>
+                        <li>
+                            <%= user.username %> <a onclick="$('#sshKey-<%=user.username%>').toggle()" style="display:inline;outline:0"><small>(show key)</small></a>
+                            <pre id="sshKey-<%=user.username%>" style="display: none"><%=user['ssh-pub-key']%></pre>
+                        </li>
+                        <% }); %>
+                    </ul>
+                </p>
             </div>
-            <p style="margin-top: 20px">
-                <strong>Repository users:</strong><br/>
-                <ul>
-                    <% _.each(users, function(user) { %>
-                    <li>
-                        <%= user.username %> <a href="#" onclick="$('#sshKey-<%=user.username%>').toggle()" style="display:inline;outline:0"><small>(show key)</small></a>
-                        <pre id="sshKey-<%=user.username%>" style="display: none"><%=user['ssh-pub-key']%></pre>
-                    </li>
-                    <% }); %>
-                </ul>
-            </p>
+            <div class="infoIcon" style="width: 15%">
+                <img src="@routes.Assets.at("images/git.png")" style="width: 100%"/>
+            </div>
+        </div>
         <% } %>
     </script>
 
@@ -413,11 +431,15 @@ git push</pre>
     </script>
 
     <script type="text/javascript" src="@routes.Assets.at("javascripts/views.AppItemView.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/views.EnvItemView.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/views.AppDetailView.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/views.AppCreationView.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/models.App.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/models.Env.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/coll.AppList.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/coll.EnvList.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/views.AppList.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/views.EnvList.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/routes.MyCloud.js")"></script>
 
 

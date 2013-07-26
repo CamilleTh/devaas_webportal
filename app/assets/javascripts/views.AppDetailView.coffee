@@ -61,17 +61,12 @@ class AppDetailView extends Backbone.View
       @subURL=$ "#subUrls"
       for fieldname, fieldvalue of data
         if(fieldname == "url")
-          console.log('fieldname',fieldname)
-          console.log('fieldvalue',fieldvalue)
           if(fieldvalue != "none")
             for envName, url of fieldvalue
-              console.log('envName',envName)
-              console.log('url',url)
               @subURL.append(@templateSubGeneral(
                 envName : envName,
                 envUrl : url
               ))
-
     )
 
   showTabStorage: ()=>

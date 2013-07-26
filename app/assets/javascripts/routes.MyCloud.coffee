@@ -3,7 +3,8 @@ class MyCloudRouter extends Backbone.Router
   initialize: ()->
     @creationView=new app.views.AppCreationView()
     @detailView=new app.views.AppDetailView()
-    @listView=new app.views.AppListView()
+    @appListView=new app.views.AppListView()
+    @envListView=new app.views.EnvListView()
     app.collections.Applications.fetch()
 
   routes:
@@ -12,19 +13,29 @@ class MyCloudRouter extends Backbone.Router
     "cancel": "cancelNewApp"
 
   getApplication: (id)->
+    @envListView.show()
     @creationView.hide()
     @detailView.displayDetail(id)
-    @listView.selectApplication(id)
-    @listView.render()
+    @appListView.selectApplication(id)
+    @appListView.render()
+    @envListView.applicationSwitch(id)
+    app.collections.Envs.fetch()
+    @envListView.render()
 
   newApplication: ()->
     @detailView.hide()
-    @listView.unselect()
-    @listView.render()
+    @unselect()
+    @appListView.render()
     @creationView.show()
 
   cancelNewApp: ()->
     @creationView.hide()
+
+  unselect: ()->
+    @envListView.unselect()
+    @envListView.hide()
+    @appListView.unselect()
+
 
 window.app=window.app || {}
 window.app.routers=window.app.routers || {}
