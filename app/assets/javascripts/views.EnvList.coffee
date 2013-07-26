@@ -35,7 +35,7 @@ class EnvListView extends Backbone.View
 
   show: ()->
     if @$el.css("display") is "none"
-      @$el.show("slow")
+      @$el.show()
 
 window.app=window.app || {}
 window.app.views=window.app.views || {}
