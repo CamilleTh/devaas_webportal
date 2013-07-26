@@ -48,10 +48,14 @@ class AppDetailView extends Backbone.View
       @showTabMonitoring() if(@currentTab is "monitoring")
     @
 
-  showTabGeneral: ()=>
-    @currentTab="general"
-    @tabGeneral.html(@templateLoading())
+  currentButtonSwitch: (nextButton)=>
+    $("#"+@currentTab).attr("disabled","")
+    $("#"+nextButton).attr("disabled","disabled")
+    @currentTab=nextButton
 
+  showTabGeneral: ()=>
+    @currentButtonSwitch("general")
+    @tabGeneral.html(@templateLoading())
     $.get("/applications/"+@applicationId, (data)=>
       @tabGeneral.html(@templateGeneral(data))
       @subURL=$ "#subUrls"
@@ -71,7 +75,7 @@ class AppDetailView extends Backbone.View
     )
 
   showTabStorage: ()=>
-    @currentTab="storage"
+    @currentButtonSwitch("storage")
     @tabStorage.html(@templateLoading())
     $.get("/storages/"+@applicationId, (data)=>
       console.log(data)
@@ -98,7 +102,7 @@ class AppDetailView extends Backbone.View
         ))
 
   showTabRepository: ()=>
-    @currentTab="repository"
+    @currentButtonSwitch("repository")
     @tabRepository.html(@templateLoading())
     $.get("/repositories/"+@applicationId, (data)=>
       @tabRepository.html(@templateRepository(data))
@@ -109,7 +113,7 @@ class AppDetailView extends Backbone.View
         ))
 
   showTabBuild: ()=>
-    @currentTab="build"
+    @currentButtonSwitch("build")
     @tabBuild.html(@templateBuild(status:"ok"))
     @subBuildsDiv=$ "#subBuilds"
     @subBuildsDiv.html(@templateLoading())
@@ -151,7 +155,7 @@ class AppDetailView extends Backbone.View
       $("#logarea").text(error.message)
 
   showTabRuntime: ()=>
-    @currentTab="runtime"
+    @currentButtonSwitch("runtime")
     @tabRuntime.html(@templateLoading())
     $.get("/runtimes/"+@applicationId, (data)=>
       @tabRuntime.html(@templateRuntime(data))
@@ -164,7 +168,7 @@ class AppDetailView extends Backbone.View
         ))
 
   showTabMonitoring: ()=>
-    @currentTab="monitoring"
+    @currentButtonSwitch("monitoring")
     @tabMonitoring.html(@templateMonitoring(status:"ok"))
     @subMonitoringDiv=$ "#subMonitoring"
     @subMonitoringDiv.html(@templateLoading())
@@ -219,7 +223,6 @@ class AppDetailView extends Backbone.View
       data: ""
     ).done ()=>
       $("""<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">x</button>Build of application """+@applicationId+""" on the environment """+env+""" has been triggered...</div>""").insertBefore("div.applicationManager")
-
 
 window.app=window.app || {}
 window.app.views=window.app.views || {}
