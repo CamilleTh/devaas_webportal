@@ -167,8 +167,7 @@ object Application extends Controller {
         case Some(data)=>
           Some(toJson(Map(
             "jobUrl"->data \ "normal" \ "ci-server" \ "jobs" \ appId \ env,
-            "jobInternalUrl"-> toJson("http://"+(data \ "automatic" \ "ipaddress").as[String]+":8080/job/"+appId),
-            "envName"-> toJson(env)
+            "jobInternalUrl"-> toJson("http://"+(data \ "automatic" \ "ipaddress").as[String]+":8080/job/"+appId)
           )))
         case _ => None
       }.flatMap{

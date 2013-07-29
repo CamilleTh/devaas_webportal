@@ -6,7 +6,6 @@ class AppDetailView extends Backbone.View
   templateGeneral: _.template( $('#template-app-general').html() )
   templateRepository: _.template( $('#template-app-repository').html() )
   templateBuild: _.template( $('#template-app-build').html() )
-  templateSubBuild: _.template( $('#template-app-sub-build').html() )
   templateStorage: _.template( $('#template-app-storage').html() )
   templateRuntime: _.template( $('#template-app-runtime').html() )
   templateMonitoring: _.template( $('#template-app-monitoring').html() )
@@ -27,7 +26,6 @@ class AppDetailView extends Backbone.View
     @tabRuntime=$ "#tabRuntime"
     @tabMonitoring=$ "#tabMonitoring"
     @currentTab="general"
-    @currentEnv="null"
     @envName="null"
     @render()
 
@@ -70,32 +68,6 @@ class AppDetailView extends Backbone.View
           status: null
         ))
 
-  showTabStorage: ()=>
-    @currentButtonSwitch("storage")
-    @tabStorage.html(@templateLoading())
-    $.get("/storages/"+@applicationId, (data)=>
-      console.log(data)
-      @tabStorage.html("");
-      for fieldname, fieldvalue of data
-        if (fieldname == "envs")
-          console.log("fieldvalue",fieldvalue)
-          for env, envAttrs of fieldvalue
-            @tabStorage.append(@templateStorage(
-              env : env
-              storageType : data.storageType
-              dbName : envAttrs.dbName
-              user : envAttrs.user
-              server : envAttrs.url
-              password : envAttrs.password
-              port : envAttrs.port
-            ))
-    ).error (error)=>
-      if error.status is 404 # Storage doesn't exists
-        @tabStorage.html(@templateStorage(
-          server: null
-          storageType: "notfound"
-        ))
-
   showTabRepository: ()=>
     @currentButtonSwitch("repository")
     @tabRepository.html(@templateLoading())
@@ -109,38 +81,50 @@ class AppDetailView extends Backbone.View
 
   showTabBuild: ()=>
     @currentButtonSwitch("build")
-    @tabBuild.html(@templateBuild(status:"ok"))
-    @subBuildsDiv=$ "#subBuilds"
-    @subBuildsDiv.html(@templateLoading())
-    $.get("/applications/"+@applicationId, (data)=>
-      @subBuildsDiv.html("")
-      for fieldname, fieldvalue of data
-        if (fieldname == "envs")
-          for name, value of fieldvalue
-            for envname, val of value
-              if(envname == "name")
-                $.get("/builds/"+@applicationId+"/"+val, (data)=>
-                  lastBuildUrl = data.lastBuildUrl
-                  res = lastBuildUrl.split "8080"
-                  lastBuildUrl = res[0]+"8080/jenkins"+res[1]
-                  data.lastBuildUrl = lastBuildUrl
-                  @currentEnv=data.envName
-                  @subBuildsDiv.append(@templateSubBuild(data))
-                  $("#"+@currentEnv+"_detail").on "click", @buildJobInfo
-                  $("#"+@currentEnv+"_btnRunBuild").on "click", @runBuild
-                ).error (error)=>
-                  if error.status is 404 # Build doesn't exists
-                    @subBuildsDiv.html(@templateSubBuild(
-                      jobUrl: null
-                    ))
-                  if error.status is 500 # Build doesn't exists
-                    @subBuildsDiv.html(@templateSubBuild(
-                      jobUrl: null
-                    ))
+    @tabBuild.html(@templateLoading())
+    $.get("/builds/"+@applicationId+"/"+@envName, (data)=>
+      @tabBuild.html("")
+      lastBuildUrl = data.lastBuildUrl
+      res = lastBuildUrl.split "8080"
+      lastBuildUrl = res[0]+"8080/jenkins"+res[1]
+      data.lastBuildUrl = lastBuildUrl
+      data.envName = @envName
+      @tabBuild.html(@templateBuild(data))
+      $("#"+@envName+"_detail").on "click", @buildJobInfo
+      $("#"+@envName+"_btnRunBuild").on "click", @runBuild
     ).error (error)=>
       if error.status is 404 # Build doesn't exists
         @tabBuild.html(@templateBuild(
-          status: null
+          jobUrl: null
+        ))
+      if error.status is 500 # Build doesn't exists
+        @tabBuild.html(@templateBuild(
+          jobUrl: null
+        ))
+
+  showTabStorage: ()=>
+    @currentButtonSwitch("storage")
+    @tabStorage.html(@templateLoading())
+    $.get("/storages/"+@applicationId, (data)=>
+      @tabStorage.html("")
+      for fieldname, fieldvalue of data
+        if (fieldname == "envs")
+          for env, envAttrs of fieldvalue
+            if (env == @envName)
+              @tabStorage.append(@templateStorage(
+                env : env
+                storageType : data.storageType
+                dbName : envAttrs.dbName
+                user : envAttrs.user
+                server : envAttrs.url
+                password : envAttrs.password
+                port : envAttrs.port
+              ))
+    ).error (error)=>
+      if error.status is 404 # Storage doesn't exists
+        @tabStorage.html(@templateStorage(
+          server: null
+          storageType: "notfound"
         ))
 
   showLog: ()=>

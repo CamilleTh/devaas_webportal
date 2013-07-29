@@ -11,6 +11,7 @@ class EnvListView extends Backbone.View
 
   applicationSwitch: (id)=>
     @$currentAppId=id
+    @unselect()
     app.collections.Envs.url="/envs/"+id
     app.collections.Envs.fetch()
 
