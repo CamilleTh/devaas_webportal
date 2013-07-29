@@ -68,7 +68,7 @@
                 <div class="control-group">
                     <label class="control-label" for="inputAppType">Stack</label>
                     <div class="controls">
-                        <select id="inputAppType">
+                        <select id="inputAppType" style="outline:0">
                             <option value="J2EE">Maven J2EE</option>
                         </select>
                     </div>
@@ -76,7 +76,7 @@
                 <div class="control-group">
                     <label class="control-label" for="inputAppStorage">Storage system</label>
                     <div class="controls">
-                        <select id="inputAppStorage">
+                        <select id="inputAppStorage" style="outline:0">
                             <option value="none">None</option>
                             <option value="mongo">MongoDB</option>
                             <option value="mysql">MySQL</option>
@@ -89,7 +89,7 @@
                         <ul id="createEnvs" class="unstyled">
                             <li><span style="display: inline-block; width: 150px">Dev</span></li>
                         </ul>
-                        <a href="#addEnvModal" role="button" class="btn" data-toggle="modal"><i class="icon-plus-sign"></i> Add environment</a>
+                        <a href="#addEnvModal" role="button" class="btn" data-toggle="modal" style="outline:0"><i class="icon-plus-sign"></i> Add environment</a>
                     </div>
                 </div>
                 <div class="control-group">
@@ -198,11 +198,11 @@
     </script>
 
     <script type="text/template" id="template-app-create-users">
-        <li><span style="display: inline-block; width: 150px"><%=username%></span><a href="#"><i class="icon-remove"></i></a></li>
+        <li><span style="display: inline-block; width: 150px"><%=username%></span><a><i class="icon-remove"></i></a></li>
     </script>
 
     <script type="text/template" id="template-app-create-envs">
-        <li><span style="display: inline-block; width: 150px"><%=env%></span><a href="#"><i class="icon-remove"></i></a></li>
+        <li><span style="display: inline-block; width: 150px"><%=env%></span><a><i class="icon-remove"></i></a></li>
     </script>
 
     <script type="text/template" id="template-app-create-envs-dev">

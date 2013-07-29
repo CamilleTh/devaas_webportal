@@ -110,11 +110,7 @@ object Application extends Controller {
                 case Some(data) =>
                   Some(toJson(Map(
                     "storageType"->toJson("mysql"),
-                    "dbName"->data \ "normal" \ "storage" \ "mysql" \ appId \ "dbName",
-                    "user"->data \ "normal" \ "storage" \ "mysql" \ appId \ "user",
-                    "password"->data \ "normal" \ "storage" \ "mysql" \ appId \ "password",
-                    "server"->data \ "normal" \ "storage" \ "mysql" \ appId \ "url",
-                    "port"->data \ "normal" \ "storage" \ "mysql" \ appId \ "port"
+                    "envs" -> data \ "normal" \ "storage" \ "mysql" \ appId
                   )))
                 case _ => None
               }
@@ -122,7 +118,7 @@ object Application extends Controller {
               cloudClient.getStorageMongo(appId).map{
                 case Some(data) =>
                   Some(toJson(Map(
-                    "storageType"->toJson("mysql"),
+                    "storageType"->toJson("mongo"),
                     "envs" -> data \ "normal" \ "storage" \ "mongodb" \ appId
                   )))
                 case _ => None
