@@ -11,7 +11,7 @@ class AppListView extends Backbone.View
   addAll: ()=>
     $("#app-list").html('<li class="nav-header">Applications</li>')
     @addOne app for app in window.app.collections.Applications.models
-    $("#app-list").append('<li><a href="#newApplication"><button class="btn btn-warning btn-mini" style="outline:0;width:100%;margin-top:0px"><i class="icon-white icon-plus"></i></button></a></li>')
+    $("#app-list").append('<li><a href="#newApplication" style="outline:0"><button class="btn btn-warning btn-mini" style="outline:0;width:100%;margin-top:0px"><i class="icon-white icon-plus"></i></button></a></li>')
 
   addOne: (app)=>
     view=new window.app.views.AppItemView(
