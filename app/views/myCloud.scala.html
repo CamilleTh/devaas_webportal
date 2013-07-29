@@ -210,14 +210,21 @@
     </script>
 
     <script type="text/template" id="template-app-general">
+        <% if(status===null) { %>
+        <div class="alert">
+            <strong>Warning!</strong> Error : app/env not found
+        </div>
+        <% } else { %>
         <div>
             <div style="width: 68%" class="infoData">
                 <div>
                     <strong>Name:</strong> <%=id%><br/>
+                    <strong>Environment:</strong> <%=envName%><br/>
                     <strong>Type:</strong> <%=type%><br/>
                     <strong>Storage:</strong> <%=storageType%><br/><br/>
                 </div>
-                <div id="subUrls" >
+                <div>
+                    <strong><%=envName%> URL:</strong> <a href="http://<%=envUrl%>" target="_blank" style="display:inline;outline:0"><%=envUrl%></a>
                 </div>
             </div>
             <div class="infoIcon" style="width:25%">
@@ -228,14 +235,8 @@
                 <% }%>
             </div>
         </div>
+        <% } %>
     </script>
-
-<script type="text/template" id="template-app-sub-general">
-    <div>
-        <strong>URL of <%=envName%> :</strong> <a href="http://<%=envUrl%>" target="_blank" style="display:inline;outline:0"><%=envUrl%></a>
-    </div>
-</script>
-
 
     <script type="text/template" id="template-app-repository">
         <% if(path===null) { %>
@@ -396,18 +397,12 @@ git push</pre>
 
     <script type="text/template" id="template-app-monitoring">
         <div>
-            <div id="subMonitoring" class="infoData" style="width: 78%">
+            <div class="infoData" style="width:78%">
+                <strong>Logs search :</strong> <a href="http://<%=kibanaUrl%>" target="_blank" style="display:inline;outline:0">Kibana generated search for <%=appId%>::<%=envName%></a>
             </div>
             <div class="infoIcon" style="width: 15%">
                 <img src="@routes.Assets.at("images/logstash.jpg")" style="width: 100%"/>
             </div>
-        </div>
-    </script>
-
-    <script type="text/template" id="template-app-sub-monitoring">
-        <div class="infoData" style="width:100%">
-            <strong><%=envName%> :</strong> <a href="http://<%=kibanaUrl%>" target="_blank" style="display:inline;outline:0">See logs</a>
-            <hr style="width:100%"/>
         </div>
     </script>
 

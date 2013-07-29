@@ -4,14 +4,12 @@ class AppDetailView extends Backbone.View
 
   templateLoading: _.template( $('#template-app-loading').html() )
   templateGeneral: _.template( $('#template-app-general').html() )
-  templateSubGeneral: _.template( $('#template-app-sub-general').html() )
   templateRepository: _.template( $('#template-app-repository').html() )
   templateBuild: _.template( $('#template-app-build').html() )
   templateSubBuild: _.template( $('#template-app-sub-build').html() )
   templateStorage: _.template( $('#template-app-storage').html() )
   templateRuntime: _.template( $('#template-app-runtime').html() )
   templateMonitoring: _.template( $('#template-app-monitoring').html() )
-  templateSubMonitoring: _.template( $('#template-app-sub-monitoring').html() )
 
   events:
     "click .tabGeneralMenu": "showTabGeneral"
@@ -30,12 +28,13 @@ class AppDetailView extends Backbone.View
     @tabMonitoring=$ "#tabMonitoring"
     @currentTab="general"
     @currentEnv="null"
-
+    @envName="null"
     @render()
 
-  displayDetail: (appId)=>
+  displayDetail: (appId,env)=>
     @show()
     @applicationId=appId
+    @envName=env
     @render()
 
   render: ()=>
@@ -57,17 +56,19 @@ class AppDetailView extends Backbone.View
     @currentButtonSwitch("general")
     @tabGeneral.html(@templateLoading())
     $.get("/applications/"+@applicationId, (data)=>
-      @tabGeneral.html(@templateGeneral(data))
-      @subURL=$ "#subUrls"
       for fieldname, fieldvalue of data
         if(fieldname == "url")
           if(fieldvalue != "none")
             for envName, url of fieldvalue
-              @subURL.append(@templateSubGeneral(
-                envName : envName,
-                envUrl : url
-              ))
-    )
+              if(envName == @envName)
+                data.envUrl=url
+                data.envName=envName
+                @tabGeneral.html(@templateGeneral(data))
+    ).error (error)=>
+      if error.status is 404 # Not found
+        @tabGeneral.html(@templateGeneral(
+          status: null
+        ))
 
   showTabStorage: ()=>
     @currentButtonSwitch("storage")
@@ -88,7 +89,6 @@ class AppDetailView extends Backbone.View
               password : envAttrs.password
               port : envAttrs.port
             ))
-
     ).error (error)=>
       if error.status is 404 # Storage doesn't exists
         @tabStorage.html(@templateStorage(
@@ -164,23 +164,12 @@ class AppDetailView extends Backbone.View
 
   showTabMonitoring: ()=>
     @currentButtonSwitch("monitoring")
-    @tabMonitoring.html(@templateMonitoring(status:"ok"))
-    @subMonitoringDiv=$ "#subMonitoring"
-    @subMonitoringDiv.html(@templateLoading())
-    $.get("/applications/"+@applicationId, (data)=>
-      @subMonitoringDiv.html("")
-      for fieldname, fieldvalue of data
-        if (fieldname == "envs")
-          for name, value of fieldvalue
-            for envname, val of value
-              if(envname == "name")
-                $.get("/kibana/"+@applicationId+"/"+val, (data)=>
-                  data.kibanaUrl = data.kibanaUrl+"/#"+Base64.encode64("{\"search\":\" @fields.application:\\\""+data.appId+"\\\" AND @fields.environment:\\\""+data.envName+"\\\"\",\"fields\":[],\"offset\":0,\"timeframe\":\"all\",\"graphmode\":\"count\",\"time\":{\"user_interval\":0},\"stamp\":0,\"mode\":\"\",\"analyze_field\":\",\"}")
-                  @subMonitoringDiv.append(@templateSubMonitoring(data))
-                ).error (error)=>
-                  console.log(error)
+    @tabMonitoring.html(@templateLoading())
+    $.get("/kibana/"+@applicationId+"/"+@envName, (data)=>
+      data.kibanaUrl = data.kibanaUrl+"/#"+Base64.encode64("{\"search\":\" @fields.application:\\\""+data.appId+"\\\" AND @fields.environment:\\\""+data.envName+"\\\"\",\"fields\":[],\"offset\":0,\"timeframe\":\"all\",\"graphmode\":\"count\",\"time\":{\"user_interval\":0},\"stamp\":0,\"mode\":\"\",\"analyze_field\":\",\"}")
+      @tabMonitoring.html(@templateMonitoring(data))
     ).error (error)=>
-      if error.status is 404 # Monitoring not found in Chef
+      if error.status is 404 # Monitoring not found
         @tabMonitoring.html(@templateMonitoring(
           status: null
         ))

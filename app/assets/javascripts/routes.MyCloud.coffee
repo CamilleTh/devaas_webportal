@@ -30,7 +30,7 @@ class MyCloudRouter extends Backbone.Router
     @envListView.show()
     @envListView.render()
     @envListView.selectEnvironment(env)
-    @detailView.displayDetail(id)
+    @detailView.displayDetail(id,env)
 
   newApplication: ()->
     @detailView.hide()
