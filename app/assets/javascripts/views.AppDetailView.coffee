@@ -83,7 +83,6 @@ class AppDetailView extends Backbone.View
     @currentButtonSwitch("build")
     @tabBuild.html(@templateLoading())
     $.get("/builds/"+@applicationId+"/"+@envName, (data)=>
-      @tabBuild.html("")
       lastBuildUrl = data.lastBuildUrl
       res = lastBuildUrl.split "8080"
       lastBuildUrl = res[0]+"8080/jenkins"+res[1]
@@ -106,12 +105,11 @@ class AppDetailView extends Backbone.View
     @currentButtonSwitch("storage")
     @tabStorage.html(@templateLoading())
     $.get("/storages/"+@applicationId, (data)=>
-      @tabStorage.html("")
       for fieldname, fieldvalue of data
         if (fieldname == "envs")
           for env, envAttrs of fieldvalue
             if (env == @envName)
-              @tabStorage.append(@templateStorage(
+              @tabStorage.html(@templateStorage(
                 env : env
                 storageType : data.storageType
                 dbName : envAttrs.dbName
