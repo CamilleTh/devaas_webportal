@@ -30,7 +30,7 @@ class VCloudClient (username:String, password:String, organization:String){
         XML.loadString(resp.body)
       }
 
-  def createVM(vmName:String, templateName:String)=
+    def createVM(vmName:String, templateName:String)=
     for(
       token<-createToken;
       orgDetail<-getOrgDetail(token.get);

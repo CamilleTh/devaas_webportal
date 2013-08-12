@@ -25,6 +25,7 @@ import scala.Some
 import actors.VMBootstrap.CreateNewVM
 import scala.Some
 import play.api.libs.json.JsObject
+import dimensionData.DimensionDataClient
 
 object Application extends Controller {
 
@@ -37,6 +38,8 @@ object Application extends Controller {
   val users=configuration.getString("authorizedUsers").map(_.split(",").toList).getOrElse(List())
 
   val bootstrapActor=Akka.system.actorOf(Props[VMBootstrap], name = "bootstrapActor")
+
+  val dimensionDataClient = new DimensionDataClient("Sebastien_Larose","intechdevaas","notused")
 
   def index = Action {request=>
     Ok(views.html.home(request.session.get("user").isDefined))
@@ -248,7 +251,12 @@ object Application extends Controller {
           cloudClient.createApp2(appId, groupid, appType, storageType, users, envs).map{
             case Some(json)=>
             //bootstrapActor ! CreateNewVM(appId,appType)
-            Ok(toJson(true))
+              envs.foreach{
+                case (name,version) =>
+                  dimensionDataClient.createServer(appId+"_"+name+"_001")
+                  dimensionDataClient.getProgression(appId+"_"+name+"_001")
+              }
+              Ok(toJson(true))
             case _ =>BadRequest("Invalid data")
         }
       }.getOrElse(Promise.pure(BadRequest("Invalid JSON")))
