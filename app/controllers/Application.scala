@@ -254,12 +254,25 @@ object Application extends Controller {
               envs.foreach{
                 case (name,version) =>
                   dimensionDataClient.createServer(appId+"_"+name+"_001")
-                  dimensionDataClient.getProgression(appId+"_"+name+"_001")
               }
               Ok(toJson(true))
             case _ =>BadRequest("Invalid data")
         }
       }.getOrElse(Promise.pure(BadRequest("Invalid JSON")))
+    }
+  }}
+
+  def getProgression(vmname:String)=Secured{Action{
+    Async {
+      dimensionDataClient.getVmDetails(vmname).map{
+        case Some(data) =>
+          Ok(toJson(Map(
+            "stepname"-> (data \ "status" \ "step" \ "name").text,
+            "stepnumber"-> (data \ "status" \ "step" \ "number").text,
+            "isDeployed"-> (data \ "isDeployed").text
+          )))
+        case _ => NotFound
+      }
     }
   }}
 

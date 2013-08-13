@@ -32,14 +32,14 @@ class DimensionDataClient(username:String, password:String, organization:String)
       )
       .map(_.status == 200)
 
-  /* def getProgression(name:String) =
-    WS.url(serverUrl+"/"+orgId+"/server/pendingDeploy")
+  def getVmDetails(name:String):Promise[Option[Node]] =
+    WS.url(serverUrl+"/"+orgId+"/serverWithState?name="+name)
       .withAuth(username,password,Realm.AuthScheme.BASIC)
       .get
-      .map(findFirstNodeWithAttribute(_,"name",name))
-      .map(_ \ "status" \ "step") */
-
-
+      .map{resp=>XML.loadString(resp.body)}
+      .map{data=>
+        (data \\ "serverWithState").headOption
+      }
 
   // private
 

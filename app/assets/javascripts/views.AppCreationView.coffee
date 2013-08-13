@@ -71,19 +71,39 @@ class AppCreationView extends Backbone.View
       @model.set("type",$("#inputAppType").val())
       @model.set("id",@fieldAppName.val())
       @model.set("storageType",$("#inputAppStorage").val())
-      console.log(@fieldGroupId.val())
       @model.set("groupid",@fieldGroupId.val())
-
-      console.log(data:JSON.stringify(@model.toJSON()))
       $.ajax(
         type: "PUT",
         url: "/applications",
         contentType: "application/json",
         data:JSON.stringify(@model.toJSON())
       ).done ()=>
-        $("""<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">x</button>The setup of your application is in progress..</div>""").insertBefore("div.applicationManager")
+        for env in @model.defaults.envs
+          $("""<div class="alert alert-success" style="width:55%"><button type="button" class="close" data-dismiss="alert">x</button>The setup of your application is in progress..</div>""").attr('id', @model.id+"_"+env.name+"_001_progression").insertBefore("div.applicationManager")
+        @interval = setInterval(@updateProgressBars, 2000)
         @hide()
         window.app.collections.Applications.fetch()
+
+  updateProgressBars: ()=>
+    @atLeastOnePending=false
+    for env in @model.defaults.envs
+      @progressBar(@model.id+"_"+env.name+"_001")
+    console.log(@atLeastOnePending)
+    if !@atLeastOnePending
+      clearInterval(@interval)
+
+  progressBar: (vmname)=>
+    console.log(vmname)
+    $.get "/progression/"+vmname, (result)=>
+      if result.isDeployed=="true"
+        $("#"+vmname+"_progression").html("""<button type="button" class="close" data-dismiss="alert">x</button>"""+"Sucess!")
+      if result.isDeployed=="false"
+        @atLeastOnePending=true
+        $("#"+vmname+"_progression").html("""<button type="button" class="close" data-dismiss="alert">x</button>"""+result.stepname+" ("+result.stepnumber+")")
+    .error(
+      @atLeastOnePending=true
+      $("#"+vmname+"_progression").html("""<button type="button" class="close" data-dismiss="alert">x</button>"""+"Not Found")
+    )
 
   addUser: ()=>
     if $("input[name='addUserType']:checked").val() is "new"
