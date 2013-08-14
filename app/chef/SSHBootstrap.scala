@@ -89,7 +89,7 @@ class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String)
         }
       chefInfos match {
         case Some(chefRoles)=>
-          loggerBootstrap.info("chef role : "chefRoles)
+          loggerBootstrap.info("chef role : "+chefRoles)
           val knifeCommand="knife bootstrap %s -r '%s' -x root -P %s".format(destHost,chefRoles,rootPassword)
           loggerBootstrap.info("Bootstrap host with command "+knifeCommand)
           val session=jsch.getSession(sshUser,sshServer,sshPort)
