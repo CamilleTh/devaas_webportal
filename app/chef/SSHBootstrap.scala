@@ -42,7 +42,6 @@ class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String)
     }
   })
 
-
   def bootstrapHost(destHost:String, rootPassword:String, appId:String, appStack:String, appParams:Map[String,String]=Map())={
     Akka.future{
       loggerBootstrap.info("Bootstrap host "+destHost+" with application "+appId+" of type "+appStack)
@@ -50,6 +49,8 @@ class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String)
         appStack match {
           case "typesafe"=>
             Some(getTypesafeChefRoles(appId,appParams),getTypesafeChefAttributes(appId,appParams))
+          case "J2EE"=>
+            Some(getJ2EEChefRoles(appId,appParams))
           case _ =>
             loggerBootstrap.error("Application stack "+appStack+" is not supported")
             None
@@ -73,6 +74,24 @@ class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String)
           channel.disconnect()
           session.disconnect()
           BootstrapResult(channel.getExitStatus==0,channel.getExitStatus)
+        case Some((chefRoles))=>
+          val knifeCommand="knife bootstrap %s -r '%s' -x root -P %s".format(destHost,chefRoles,rootPassword)
+          loggerBootstrap.debug("Bootstrap host with command "+knifeCommand)
+          val session=jsch.getSession(sshUser,sshServer,sshPort)
+          session.connect()
+          val channel=session.openChannel("exec")
+          channel.asInstanceOf[ChannelExec].setCommand("cd /usr/share/bootstrap;"+knifeCommand)
+          channel.setInputStream(null)
+          channel.asInstanceOf[ChannelExec].setErrStream(System.err)
+          val outSource=Source.fromInputStream(channel.getInputStream)
+          channel.connect()
+          while(!channel.isClosed){
+            outSource.getLines().foreach(loggerBootstrap.debug(_))
+          }
+          loggerBootstrap.debug("Exit status : "+channel.getExitStatus)
+          channel.disconnect()
+          session.disconnect()
+          BootstrapResult(channel.getExitStatus==0,channel.getExitStatus)
         case _ => BootstrapResult(false,1)
       }
     }
@@ -81,8 +100,9 @@ class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String)
   private def getTypesafeChefAttributes(appId:String, params:Map[String,String])=
     "{\"typesafe\":{\"playserver\":{\"appname\":\"%s\",\"buildUrl\":\"%s\"}}}".format(appId,params("buildUrl"))
 
+
+
   private def getTypesafeChefRoles(appId:String, params:Map[String,String])="role[play-server]"
 
-
-
+  private def getJ2EEChefRoles(appId:String, params:Map[String,String])="role[runtime]"
 }
