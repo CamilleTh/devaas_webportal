@@ -37,6 +37,4 @@ GET         /logout                      controllers.Application.doLogout
 GET         /logs/:appId                 controllers.Application.streamLog(appId:String)
 
 
-GET         /test/:appId/:appType        controllers.Application.test(appId:String,appType:String)
-
 GET         /test                        controllers.Application.mytest
