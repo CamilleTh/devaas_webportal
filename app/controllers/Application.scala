@@ -11,6 +11,7 @@ import play.api.mvc._
 import play.api.libs.json.Json._
 import play.api.libs.EventSource
 import chef.InTechCloudClient
+import chef.SSHBootstrap
 import scala.Some
 import play.api.Play.current
 import play.api.Play.configuration
@@ -39,6 +40,13 @@ object Application extends Controller {
 
   val bootstrapActor=Akka.system.actorOf(Props[VMBootstrap], name = "bootstrapActor")
 
+  val sshClient=new SSHBootstrap(
+    configuration.getString("chef.bootstrap.server").get,
+    configuration.getInt("chef.bootstrap.port").get,
+    configuration.getString("chef.bootstrap.user").get,
+    play.api.Play.current.getFile(configuration.getString("chef.bootstrap.userKey").get).getAbsolutePath
+  )
+
   val dimensionDataClient = new DimensionDataClient("Sebastien_Larose","intechdevaas","notused")
 
   def index = Action {request=>
@@ -57,6 +65,8 @@ object Application extends Controller {
       }}
     }
   }}
+
+
 
   def mytest=Secured{Action{
     Async{
@@ -263,6 +273,35 @@ object Application extends Controller {
 
         }
       }.getOrElse(Promise.pure(BadRequest("Invalid JSON")))
+    }
+  }}
+
+  def bootstrap=Secured{Action{request=>
+    Async {
+      request.body.asJson.map{json=>
+        val (destHost,rootPassword,appStack)=(
+          (json \ "destHost").as[String].trim,
+          (json \ "rootPassword").as[String].trim,
+          (json \ "appStack").as[String].trim,
+          )
+        users.foreach{user=>
+          cloudClient.createUser(user._1,user._2)
+        }
+        sshClient.bootstrapHost2(destHost,rootPassword,appStack).map{
+          case Some(data) => Ok(data)
+          case _ => Ok("")
+        }
+      }.getOrElse(Promise.pure(BadRequest("Invalid JSON")))
+    }
+  }}
+
+  def bootstrap(destHost:String,rootPassword:String,appStack:String)=Secured{Action{
+    Async{
+      sshClient.bootstrapHost2(destHost,rootPassword,appStack).map{app=>app match{
+        case Some(data) => Ok(data)
+        case _ => Ok("")
+        }
+      }
     }
   }}
 

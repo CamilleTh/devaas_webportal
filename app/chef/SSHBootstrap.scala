@@ -16,7 +16,6 @@ case class BootstrapResult(success:Boolean,statusCode:Int)
 
 class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String) {
 
-
   private val loggerSSH=api.Logger("ssh")
   private val loggerBootstrap=api.Logger("bootstrap")
 
@@ -49,8 +48,6 @@ class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String)
         appStack match {
           case "typesafe"=>
             Some(getTypesafeChefRoles(appId,appParams),getTypesafeChefAttributes(appId,appParams))
-          case "J2EE"=>
-            Some(getJ2EEChefRoles(appId,appParams))
           case _ =>
             loggerBootstrap.error("Application stack "+appStack+" is not supported")
             None
@@ -74,6 +71,23 @@ class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String)
           channel.disconnect()
           session.disconnect()
           BootstrapResult(channel.getExitStatus==0,channel.getExitStatus)
+
+      }
+    }
+  }
+
+  def bootstrapHost2(destHost:String, rootPassword:String, appStack:String)={
+    Akka.future{
+      loggerBootstrap.info("Bootstrap host "+destHost+" with application "+appId+" of type "+appStack)
+      val chefInfos=
+        appStack match {
+          case "J2EE"=>
+            Some(getJ2EEChefRoles(appId))
+          case _ =>
+            loggerBootstrap.error("Application stack "+appStack+" is not supported")
+            None
+        }
+      chefInfos match {
         case Some((chefRoles))=>
           val knifeCommand="knife bootstrap %s -r '%s' -x root -P %s".format(destHost,chefRoles,rootPassword)
           loggerBootstrap.debug("Bootstrap host with command "+knifeCommand)
@@ -100,9 +114,7 @@ class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String)
   private def getTypesafeChefAttributes(appId:String, params:Map[String,String])=
     "{\"typesafe\":{\"playserver\":{\"appname\":\"%s\",\"buildUrl\":\"%s\"}}}".format(appId,params("buildUrl"))
 
-
-
   private def getTypesafeChefRoles(appId:String, params:Map[String,String])="role[play-server]"
 
-  private def getJ2EEChefRoles(appId:String, params:Map[String,String])="role[runtime]"
+  private def getJ2EEChefRoles(appId:String)="role[runtime]"
 }

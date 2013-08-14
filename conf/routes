@@ -9,6 +9,7 @@ GET         /mycloud                     controllers.Application.myCloud
 # REST controllers
 GET         /applications                controllers.Application.getAllApplication
 PUT         /applications                controllers.Application.createApplication
+PUT         /bootstrap                   controllers.Application.bootstrap
 GET         /applications/:id            controllers.Application.getApplicationDetail(id:String)
 GET         /envs/:id                    controllers.Application.getEnvsByApplication(id:String)
 GET         /storages/:id                controllers.Application.getStorageDetail(id:String)
