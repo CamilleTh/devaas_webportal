@@ -101,13 +101,25 @@ class AppCreationView extends Backbone.View
         #
         #
         #
-        # ATTENTION : MOT DE PASSE EN DUR
+        # ATTENTION : MOT DE PASSE EN DUR +
         #
         #
         #
         #
         #
         #
+        params.set("rootPassword","intechdevaas")
+        params.set("destHost",privateIp)
+        params.set("appStack",@model.get("type"))
+        console.log(params)
+        $.ajax(
+          type: "PUT",
+          url: "/bootstrap",
+          contentType: "application/json",
+          data:JSON.stringify(params.toJSON())
+        ).done (done)=>
+          console.log(done)
+
       if result.isDeployed=="false"
         totalsteps=result.totalsteps
         stepnumber=result.stepnumber
