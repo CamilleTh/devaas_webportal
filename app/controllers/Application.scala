@@ -38,7 +38,7 @@ object Application extends Controller {
 
   val users=configuration.getString("authorizedUsers").map(_.split(",").toList).getOrElse(List())
 
-  val bootstrapActor=Akka.system.actorOf(Props[VMBootstrap], name = "bootstrapActor")
+  //val bootstrapActor=Akka.system.actorOf(Props[VMBootstrap], name = "bootstrapActor")
 
   val sshClient=new SSHBootstrap(
     configuration.getString("chef.bootstrap.server").get,
@@ -276,29 +276,15 @@ object Application extends Controller {
   }}
 
   def bootstrap=Secured{Action{request=>
-    Async {
       request.body.asJson.map{json=>
         val (destHost,rootPassword,appStack)=(
           (json \ "destHost").as[String].trim,
           (json \ "rootPassword").as[String].trim,
-          (json \ "appStack").as[String].trim,
+          (json \ "appStack").as[String].trim
         )
-        sshClient.bootstrapHost2(destHost,rootPassword,appStack).map{
-          case Some(data) => Ok(data)
-          case _ => Ok("")
-        }
-      }.getOrElse(Promise.pure(BadRequest("Invalid JSON")))
-    }
-  }}
-
-  def bootstrap(destHost:String,rootPassword:String,appStack:String)=Secured{Action{
-    Async{
-      sshClient.bootstrapHost2(destHost,rootPassword,appStack).map{app=>app match{
-        case Some(data) => Ok(data)
-        case _ => Ok("")
-        }
-      }
-    }
+        sshClient.bootstrapHost2(destHost,rootPassword,appStack)
+        Ok("")
+      }.getOrElse(BadRequest(""))
   }}
 
   def getProgression(vmname:String)=Secured{Action{
@@ -428,8 +414,4 @@ object Application extends Controller {
     }
   }}}
 
-  def test(appId:String,appType:String)=Action{
-    bootstrapActor ! CreateNewVM(appId,appType)
-    Ok("OK")
-  }
 }

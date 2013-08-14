@@ -78,11 +78,11 @@ class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String)
 
   def bootstrapHost2(destHost:String, rootPassword:String, appStack:String)={
     Akka.future{
-      loggerBootstrap.info("Bootstrap host "+destHost+" with application "+appId+" of type "+appStack)
+      loggerBootstrap.info("Bootstrap host "+destHost+" of type "+appStack)
       val chefInfos=
         appStack match {
           case "J2EE"=>
-            Some(getJ2EEChefRoles(appId))
+            Some("role[runtime]")
           case _ =>
             loggerBootstrap.error("Application stack "+appStack+" is not supported")
             None
@@ -116,5 +116,4 @@ class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String)
 
   private def getTypesafeChefRoles(appId:String, params:Map[String,String])="role[play-server]"
 
-  private def getJ2EEChefRoles()="role[runtime]"
 }
