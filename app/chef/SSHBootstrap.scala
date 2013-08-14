@@ -88,9 +88,10 @@ class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String)
             None
         }
       chefInfos match {
-        case Some((chefRoles))=>
+        case Some(chefRoles)=>
+          loggerBootstrap.info("chef role : "chefRoles)
           val knifeCommand="knife bootstrap %s -r '%s' -x root -P %s".format(destHost,chefRoles,rootPassword)
-          loggerBootstrap.debug("Bootstrap host with command "+knifeCommand)
+          loggerBootstrap.info("Bootstrap host with command "+knifeCommand)
           val session=jsch.getSession(sshUser,sshServer,sshPort)
           session.connect()
           val channel=session.openChannel("exec")
@@ -102,11 +103,13 @@ class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String)
           while(!channel.isClosed){
             outSource.getLines().foreach(loggerBootstrap.debug(_))
           }
-          loggerBootstrap.debug("Exit status : "+channel.getExitStatus)
+          loggerBootstrap.info("Exit status : "+channel.getExitStatus)
           channel.disconnect()
           session.disconnect()
           BootstrapResult(channel.getExitStatus==0,channel.getExitStatus)
-        case _ => BootstrapResult(false,1)
+        case _ =>
+          loggerBootstrap.info("Default bug")
+          BootstrapResult(false,1)
       }
     }
   }
