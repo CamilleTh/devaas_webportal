@@ -72,6 +72,7 @@ class AppCreationView extends Backbone.View
       @model.set("id",@fieldAppName.val())
       @model.set("storageType",$("#inputAppStorage").val())
       @model.set("groupid",@fieldGroupId.val())
+      @model.set("port","8080")
       $.ajax(
         type: "PUT",
         url: "/applications",
