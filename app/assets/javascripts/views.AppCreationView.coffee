@@ -96,6 +96,18 @@ class AppCreationView extends Backbone.View
         $("#"+vmname+"_progression").children(".progress").children(".bar").attr('style',"width:100%")
         $("#"+vmname+"_progression").children(".infoData").html(vmname+" : Success!")
         privateIp=result.privateIp
+        #
+        #
+        #
+        #
+        #
+        # ATTENTION : MOT DE PASSE EN DUR
+        #
+        #
+        #
+        #
+        #
+        #
       if result.isDeployed=="false"
         totalsteps=result.totalsteps
         stepnumber=result.stepnumber
