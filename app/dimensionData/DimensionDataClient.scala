@@ -43,13 +43,21 @@ class DimensionDataClient(username:String, password:String, organization:String)
 
   // private
 
+  //
+  //
+  //
+  //
+  // ATTENTION MOT DE PASSE EN DUR
+  //
+  //
+  //
   private def getCreateServerXML(vmName:String) =
     <Server xmlns='http://oec.api.opsource.net/schemas/server'>
       <name>{vmName}</name>
       <description>My Server Description</description>
       <vlanResourcePath>/oec/{orgId}/network/{networkId}</vlanResourcePath>
       <imageResourcePath>/oec/base/image/{imageId}</imageResourcePath>
-      <administratorPassword>zyxw4321</administratorPassword>
+      <administratorPassword>intechdevaas</administratorPassword>
       <isStarted>true</isStarted>
     </Server>
 

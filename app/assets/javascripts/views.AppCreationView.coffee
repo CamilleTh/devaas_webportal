@@ -79,8 +79,11 @@ class AppCreationView extends Backbone.View
         contentType: "application/json",
         data:JSON.stringify(@model.toJSON())
       ).done ()=>
+        @bootstraped = []
         for env in @model.get("envs")
-          $("""<div class="alert alert-warning" style="width:55%"><button type="button" class="close" data-dismiss="alert">x</button><div class="infoData"></div><div class="progress progress-warning progress-striped"><div class="bar" style="width: 0%"></div></div></div>""").attr('id', @model.id+"_"+env.name+"_001_progression").insertBefore("div.applicationManager")
+          vmname = @model.id+"_"+env.name+"_001"
+          $("""<div class="alert alert-warning" style="width:55%"><button type="button" class="close" data-dismiss="alert">x</button><div class="infoData">Loading...</div><div class="progress progress-warning progress-striped"><div class="bar" style="width: 15%"></div></div></div>""").attr('id', vmname+"_progression").insertBefore("div.applicationManager")
+          @bootstraped[vmname]=false
         @interval = setInterval(@updateProgressBars, 5000)
         @hide()
         window.app.collections.Applications.fetch()
@@ -95,30 +98,32 @@ class AppCreationView extends Backbone.View
       if result.isDeployed=="true"
         $("#"+vmname+"_progression").children(".progress").children(".bar").attr('style',"width:100%")
         $("#"+vmname+"_progression").children(".infoData").html(vmname+" : Success!")
-        privateIp=result.privateIp
-        #
-        #
-        #
-        #
-        #
-        # ATTENTION : MOT DE PASSE EN DUR +
-        #
-        #
-        #
-        #
-        #
-        #
-        params.set("rootPassword","intechdevaas")
-        params.set("destHost",privateIp)
-        params.set("appStack",@model.get("type"))
-        console.log(params)
-        $.ajax(
-          type: "PUT",
-          url: "/bootstrap",
-          contentType: "application/json",
-          data:JSON.stringify(params.toJSON())
-        ).done (done)=>
-          console.log(done)
+        if !@bootstraped[vmname]
+          @bootstraped[vmname]=true
+          privateIp=result.privateIp
+          #
+          #
+          #
+          #
+          #
+          # ATTENTION : MOT DE PASSE EN DUR +
+          #
+          #
+          #
+          #
+          #
+          #
+          params =
+            rootPassword: "intechdevaas"
+            destHost: privateIp
+            appStack: @model.get("type")
+          $.ajax(
+            type: "PUT",
+            url: "/bootstrap",
+            contentType: "application/json",
+            data:JSON.stringify(params)
+          ).done (done)=>
+            console.log(done)
 
       if result.isDeployed=="false"
         totalsteps=result.totalsteps
