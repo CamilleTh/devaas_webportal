@@ -95,8 +95,9 @@ class AppCreationView extends Backbone.View
       if result.isDeployed=="true"
         $("#"+vmname+"_progression").children(".progress").children(".bar").attr('style',"width:100%")
         $("#"+vmname+"_progression").children(".infoData").html(vmname+" : Success!")
+        privateIp=result.privateIp
       if result.isDeployed=="false"
-        totalsteps=13
+        totalsteps=result.totalsteps
         stepnumber=result.stepnumber
         stepname=result.stepname
         progression=(stepnumber/totalsteps)*100

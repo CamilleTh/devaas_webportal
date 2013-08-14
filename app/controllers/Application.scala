@@ -274,7 +274,8 @@ object Application extends Controller {
             "stepname"-> (data \ "status" \ "step" \ "name").text,
             "totalsteps"-> (data \ "status" \ "numberOfSteps").text,
             "stepnumber"-> (data \ "status" \ "step" \ "number").text,
-            "isDeployed"-> (data \ "isDeployed").text
+            "isDeployed"-> (data \ "isDeployed").text,
+            "privateIp"-> (data \ "privateIp").text
           )))
         case _ => NotFound
       }
