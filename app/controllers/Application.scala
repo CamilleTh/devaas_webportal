@@ -232,10 +232,11 @@ object Application extends Controller {
       request.body.asJson.map{json=>
 
         //val (appId,appType,storageType,users)=(
-        val (appId,appType,groupid,storageType,users,envs)=(
+        val (appId,appType,groupid,port,storageType,users,envs)=(
           (json \ "id").as[String].trim,
           (json \ "type").as[String].trim,
           (json \ "groupid").as[String].trim,
+          (json \ "port").as[String].trim,
           (json \ "storageType").as[String].trim,
           (json \ "users").as[List[JsValue]].map{user=>
             ((user \ "username").as[String],(user \ "userkey").as[String])
@@ -248,15 +249,16 @@ object Application extends Controller {
             cloudClient.createUser(user._1,user._2)
         }
           //cloudClient.createApp(appId,appType,storageType,users).map{
-          cloudClient.createApp2(appId, groupid, appType, storageType, users, envs).map{
+          cloudClient.createApp2(appId, groupid, appType, port, storageType, users, envs).map{
             case Some(json)=>
             //bootstrapActor ! CreateNewVM(appId,appType)
-              envs.foreach{
-                case (name,version) =>
-                  dimensionDataClient.createServer(appId+"_"+name+"_001")
-              }
-              Ok(toJson(true))
+            //envs.foreach{
+             //   case (name,version) =>
+             //     dimensionDataClient.createServer(appId+"_"+name+"_001")
+            //}
+            Ok(toJson(true))
             case _ =>BadRequest("Invalid data")
+
         }
       }.getOrElse(Promise.pure(BadRequest("Invalid JSON")))
     }

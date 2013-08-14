@@ -147,12 +147,13 @@ class InTechCloudClient(val chefServerURL:String, val chefServerBasePath:String,
     ))
 
 
-  def createApp2(appId:String, groupid:String, appType:String, storageType: String, users:List[(String,String)], envs:List[(String,String)])=
+  def createApp2(appId:String, groupid:String, appType:String, port:String, storageType: String, users:List[(String,String)], envs:List[(String,String)])=
     chefClient.doPost(chefServerBasePath+"/data/apps",Some(
       toJson(Map(
         "id"->toJson(appId),
         "groupid"->toJson(groupid),
         "type"->toJson(appType),
+        "port"->toJson(port),
         "storageType"->toJson(storageType),
         "users"->toJson(users.map{user=>
           toJson(Map(
