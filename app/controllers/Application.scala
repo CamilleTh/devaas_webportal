@@ -252,10 +252,12 @@ object Application extends Controller {
           cloudClient.createApp2(appId, groupid, appType, port, storageType, users, envs).map{
             case Some(json)=>
             //bootstrapActor ! CreateNewVM(appId,appType)
-            //envs.foreach{
-             //   case (name,version) =>
-             //     dimensionDataClient.createServer(appId+"_"+name+"_001")
-            //}
+            envs.foreach{
+              case (name,version) =>
+                Thread.sleep(1000)
+                println(appId+"_"+name+"_001")
+                dimensionDataClient.createServer(appId+"_"+name+"_001")
+            }
             Ok(toJson(true))
             case _ =>BadRequest("Invalid data")
 
@@ -270,8 +272,10 @@ object Application extends Controller {
         case Some(data) =>
           Ok(toJson(Map(
             "stepname"-> (data \ "status" \ "step" \ "name").text,
+            "totalsteps"-> (data \ "status" \ "numberOfSteps").text,
             "stepnumber"-> (data \ "status" \ "step" \ "number").text,
-            "isDeployed"-> (data \ "isDeployed").text
+            "isDeployed"-> (data \ "isDeployed").text,
+            "privateIp"-> (data \ "privateIp").text
           )))
         case _ => NotFound
       }
