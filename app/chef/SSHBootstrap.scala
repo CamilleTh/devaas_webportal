@@ -116,5 +116,5 @@ class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String)
 
   private def getTypesafeChefRoles(appId:String, params:Map[String,String])="role[play-server]"
 
-  private def getJ2EEChefRoles(appId:String)="role[runtime]"
+  private def getJ2EEChefRoles()="role[runtime]"
 }
