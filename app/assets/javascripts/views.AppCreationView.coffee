@@ -79,32 +79,32 @@ class AppCreationView extends Backbone.View
         contentType: "application/json",
         data:JSON.stringify(@model.toJSON())
       ).done ()=>
-        for env in @model.defaults.envs
-          $("""<div class="alert alert-success" style="width:55%"><button type="button" class="close" data-dismiss="alert">x</button>The setup of your application is in progress..</div>""").attr('id', @model.id+"_"+env.name+"_001_progression").insertBefore("div.applicationManager")
-        @interval = setInterval(@updateProgressBars, 2000)
+        for env in @model.get("envs")
+          $("""<div class="alert alert-warning" style="width:55%"><button type="button" class="close" data-dismiss="alert">x</button><div class="infoData"></div><div class="progress progress-warning progress-striped"><div class="bar" style="width: 0%"></div></div></div>""").attr('id', @model.id+"_"+env.name+"_001_progression").insertBefore("div.applicationManager")
+        @interval = setInterval(@updateProgressBars, 5000)
         @hide()
         window.app.collections.Applications.fetch()
 
   updateProgressBars: ()=>
-    @atLeastOnePending=false
-    for env in @model.defaults.envs
-      @progressBar(@model.id+"_"+env.name+"_001")
-    console.log(@atLeastOnePending)
-    if !@atLeastOnePending
-      clearInterval(@interval)
+    for env in @model.get("envs")
+      vmname = @model.id+"_"+env.name+"_001"
+      @progressBar(vmname)
 
   progressBar: (vmname)=>
-    console.log(vmname)
     $.get "/progression/"+vmname, (result)=>
       if result.isDeployed=="true"
-        $("#"+vmname+"_progression").html("""<button type="button" class="close" data-dismiss="alert">x</button>"""+"Sucess!")
+        $("#"+vmname+"_progression").children(".progress").children(".bar").attr('style',"width:100%")
+        $("#"+vmname+"_progression").children(".infoData").html("Success!")
       if result.isDeployed=="false"
-        @atLeastOnePending=true
-        $("#"+vmname+"_progression").html("""<button type="button" class="close" data-dismiss="alert">x</button>"""+result.stepname+" ("+result.stepnumber+")")
-    .error(
-      @atLeastOnePending=true
-      $("#"+vmname+"_progression").html("""<button type="button" class="close" data-dismiss="alert">x</button>"""+"Not Found")
-    )
+        totalsteps=13
+        stepnumber=result.stepnumber
+        stepname=result.stepname
+        progression=(stepnumber/totalsteps)*100
+        $("#"+vmname+"_progression").children(".progress").children(".bar").attr('style',"width:"+progression+"%")
+        $("#"+vmname+"_progression").children(".infoData").html(vmname+" : Step "+stepnumber+" / "+totalsteps)
+    .error (error)=>
+      $("#"+vmname+"_progression").children(".infoData").html("Not Found")
+
 
   addUser: ()=>
     if $("input[name='addUserType']:checked").val() is "new"
@@ -208,7 +208,6 @@ class AppCreationView extends Backbone.View
     @renderUserList()
 
   removeEnv: (env)=>
-    console.log(env)
     @model.set("envs",@model.get("envs").filter (envi)->
       envi.name isnt env
     )
