@@ -35,6 +35,3 @@ POST        /login                       controllers.Application.doLogin
 GET         /logout                      controllers.Application.doLogout
 
 GET         /logs/:appId                 controllers.Application.streamLog(appId:String)
-
-
-GET         /test                        controllers.Application.test

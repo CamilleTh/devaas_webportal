@@ -398,11 +398,6 @@ object Application extends Controller {
     Redirect("/").withNewSession
   }
 
-  def test = Action{
-    sshClient.test
-    Ok("")
-  }
-
   def Secured(action:Action[AnyContent])=Authenticated(
     req => req.session.get("user"),
     _ => Forbidden("You have to be authenticated to access this service"))(username=> action)
