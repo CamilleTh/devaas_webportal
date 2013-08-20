@@ -285,7 +285,7 @@ object Application extends Controller {
           (json \ "env").as[String].trim,
           (json \ "groupId").as[String].trim
         )
-        sshClient.bootstrapHost2(destHost, appId, groupId, env, rootPassword, appStack)
+        sshClient.bootstrapHost2(destHost,rootPassword, appStack, appId, groupId, env )
         Ok("")
       }.getOrElse(BadRequest(""))
   }}

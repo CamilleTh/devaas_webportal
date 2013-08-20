@@ -76,7 +76,8 @@ class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String)
     }
   }
 
-  def bootstrapHost2(destHost:String, appId:String, groupId:String, env:String, rootPassword:String, appStack:String)={
+
+  def bootstrapHost2(destHost:String,rootPassword:String, appStack:String, appId:String, groupId:String, env:String)={
     Akka.future{
       loggerBootstrap.info("Bootstrap host "+destHost+" of type "+appStack)
       val chefInfos=
@@ -91,7 +92,7 @@ class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String)
         case Some(chefRoles)=>
           loggerBootstrap.info("sshServer:"+sshServer+" sshPort:"+sshPort+ " sshUser:"+sshUser+ " sshKey:"+sshKey)
           loggerBootstrap.info("chef role : "+chefRoles)
-          val knifeCommand="knife bootstrap %s -r '%s' -j \"DeployList\": [{\"groupid\": \""+groupId+"\", \"artefactid\": \""+appId+"\",\"version\": \"0.1-SNAPSHOT\",\"current_version\": \"none\",\"env\": \""+env+"\"}] -x root -P %s".format(destHost,chefRoles,rootPassword)
+          val knifeCommand="knife bootstrap %s -r '%s' -j '{\"DeployList\": [{\"groupid\": \"%s\", \"artefactid\": \"%s\",\"version\": \"0.1-SNAPSHOT\",\"current_version\": \"none\",\"env\": \"%s\"}]}' -x root -P %s".format(destHost,chefRoles,groupId,appId,env,rootPassword)
           loggerBootstrap.info("Bootstrap host with command ("+knifeCommand+")")
           val session=jsch.getSession(sshUser,sshServer,sshPort)
           session.connect()

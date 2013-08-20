@@ -120,7 +120,8 @@ class AppCreationView extends Backbone.View
             env : env
             appId : @model.get("id")
             groupId : @model.get("groupid")
-          console.log(params)
+
+          console.log(params)   # ATTENTION : MOT DE PASSE EN DUR
           $.ajax(
             type: "PUT",
             url: "/bootstrap",
