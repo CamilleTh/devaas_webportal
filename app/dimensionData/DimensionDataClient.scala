@@ -18,7 +18,7 @@ class DimensionDataClient(username:String, password:String, organization:String)
 
   private val orgId = "44ca852a-6a63-4b99-b6c3-fee83015b068"
   private val networkId = "2662bb0e-6550-11e2-84e5-180373fb68df"
-  private val imageId = "d4ed6d40-e2f0-11e2-84e5-180373fb68df"
+  private val imageId = "447c141e-dc7d-40d1-96fb-6ae75d4cc6b6"
 
 
   // public
