@@ -91,9 +91,9 @@ class AppCreationView extends Backbone.View
   updateProgressBars: ()=>
     for env in @model.get("envs")
       vmname = @model.id+"_"+env.name+"_001"
-      @progressBar(vmname)
+      @progressBar(vmname,env.name)
 
-  progressBar: (vmname)=>
+  progressBar: (vmname,env)=>
     $.get "/progression/"+vmname, (result)=>
       if result.isDeployed=="true"
         $("#"+vmname+"_progression").children(".progress").children(".bar").attr('style',"width:100%")
@@ -117,6 +117,9 @@ class AppCreationView extends Backbone.View
             rootPassword: "intechdevaas"
             destHost: privateIp
             appStack: @model.get("type")
+            env : env
+            appId : @model.get("id")
+            groupId : @model.get("groupid")
           $.ajax(
             type: "PUT",
             url: "/bootstrap",

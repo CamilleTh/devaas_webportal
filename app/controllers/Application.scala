@@ -277,12 +277,15 @@ object Application extends Controller {
 
   def bootstrap=Secured{Action{request=>
       request.body.asJson.map{json=>
-        val (destHost,rootPassword,appStack)=(
+        val (destHost,rootPassword,appStack,appId,env,groupId)=(
           (json \ "destHost").as[String].trim,
           (json \ "rootPassword").as[String].trim,
-          (json \ "appStack").as[String].trim
+          (json \ "appStack").as[String].trim,
+          (json \ "appId").as[String].trim,
+          (json \ "env").as[String].trim,
+          (json \ "groupId").as[String].trim
         )
-        sshClient.bootstrapHost2(destHost,rootPassword,appStack)
+        sshClient.bootstrapHost2(destHost, appId, groupId, env, rootPassword, appStack)
         Ok("")
       }.getOrElse(BadRequest(""))
   }}
