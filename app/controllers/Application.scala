@@ -89,7 +89,6 @@ object Application extends Controller {
 
   def getApplicationDetail(appId:String)=Secured{Action{
     Async{
-      println("getApplicationDetail "+appId)
       cloudClient.getApplication(appId).flatMap{
           case Some(detail)=>
               cloudClient.getHostingProxy(appId).map{
