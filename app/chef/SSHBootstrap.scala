@@ -92,7 +92,7 @@ class SSHBootstrap(sshServer:String, sshPort:Int, sshUser:String, sshKey:String)
         case Some(chefRoles)=>
           loggerBootstrap.info("sshServer:"+sshServer+" sshPort:"+sshPort+ " sshUser:"+sshUser+ " sshKey:"+sshKey)
           loggerBootstrap.info("chef role : "+chefRoles)
-          val knifeCommand="knife bootstrap %s -r '%s' -j '{\"DeployList\": [{\"groupid\": \"%s\", \"artefactid\": \"%s\",\"version\": \"0.1-SNAPSHOT\",\"current_version\": \"none\",\"env\": \"%s\"}],\"proxy\": {\"hosts\": { \"%s\": \"%s\"}}}' -x root -P %s".format(destHost,chefRoles,groupId,appId,env,appid,"URL",rootPassword)
+          val knifeCommand="knife bootstrap %s -r '%s' -j '{\"DeployList\": [{\"groupid\": \"%s\", \"artefactid\": \"%s\",\"version\": \"0.1-SNAPSHOT\",\"current_version\": \"none\",\"env\": \"%s\"}],\"proxy\": {\"hosts\": { \"%s\": \"%s\"}}}' -x root -P %s".format(destHost,chefRoles,groupId,appId,env,appId,"URL",rootPassword)
           loggerBootstrap.info("Bootstrap host with command ("+knifeCommand+")")
           val session=jsch.getSession(sshUser,sshServer,sshPort)
           session.connect()
