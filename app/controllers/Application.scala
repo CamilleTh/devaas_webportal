@@ -264,7 +264,6 @@ object Application extends Controller {
           //bootstrapActor ! CreateNewVM(appId,appType)
           envs.foreach{
             case (name,version) =>
-              Thread.sleep(1000)
               println(appId+"_"+name+"_001")
               dimensionDataClient.createServer(appId+"_"+name+"_001")
           }
