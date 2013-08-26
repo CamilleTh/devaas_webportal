@@ -81,6 +81,7 @@ class AppCreationView extends Backbone.View
       ).done ()=>
         @bootstraped = []
         for env in @model.get("envs")
+          sleep(1000)
           vmname = @model.id+"_"+env.name+"_001"
           $("""<div class="alert alert-warning" style="width:55%"><button type="button" class="close" data-dismiss="alert">x</button><div class="infoData">Loading...</div><div class="progress progress-warning progress-striped"><div class="bar" style="width: 15%"></div></div></div>""").attr('id', vmname+"_progression").insertBefore("div.applicationManager")
           @bootstraped[vmname]=false
