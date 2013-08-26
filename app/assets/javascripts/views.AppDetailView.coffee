@@ -54,11 +54,13 @@ class AppDetailView extends Backbone.View
     @currentButtonSwitch("general")
     @tabGeneral.html(@templateLoading())
     $.get("/applications/"+@applicationId, (data)=>
+      console.log(data)
       for fieldname, fieldvalue of data
         if(fieldname == "url")
           if(fieldvalue != "none")
             for envName, url of fieldvalue
               if(envName == @envName)
+                consolelog("URL"+url)
                 data.envUrl=url
                 data.envName=envName
                 @tabGeneral.html(@templateGeneral(data))
